@@ -1,173 +1,238 @@
-import { SinglePageContent, SectionTitle, TwoColumn, Column, HighlightBox, DefinitionBox } from "@/components/SinglePageContent";
-import { Paragraph, Code, Callout } from "@/components/AlgorithmContent";
+import { SinglePageContent, SectionTitle } from "@/components/SinglePageContent";
+import { Callout } from "@/components/AlgorithmContent";
 import { Quiz } from "@/components/Quiz";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Database, Zap, RefreshCw, Server, Clock, AlertTriangle } from "lucide-react";
+
+interface PatternCardProps {
+  title: string;
+  icon: React.ReactNode;
+  description?: string;
+  mechanics: { label: string; text: string }[];
+  pros: string[];
+  cons: string[];
+  useWhen: string[];
+}
+
+const PatternCard = ({ title, icon, description, mechanics, pros, cons, useWhen }: PatternCardProps) => (
+  <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors">
+    {/* Header */}
+    <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-5 py-4 border-b border-border">
+      <div className="flex items-center gap-3">
+        <div className="p-2 rounded-lg bg-primary/10 text-primary">
+          {icon}
+        </div>
+        <h3 className="font-bold text-lg text-foreground">{title}</h3>
+      </div>
+    </div>
+    
+    {/* Content */}
+    <div className="p-5 space-y-4">
+      {description && (
+        <p className="text-sm text-muted-foreground">{description}</p>
+      )}
+      
+      {/* Mechanics */}
+      <div className="space-y-2">
+        {mechanics.map((m, i) => (
+          <div key={i} className="flex gap-2 text-sm">
+            <span className="font-semibold text-foreground whitespace-nowrap">{m.label}:</span>
+            <span className="text-muted-foreground">{m.text}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Pros */}
+      <div className="space-y-1.5">
+        {pros.map((pro, i) => (
+          <div key={i} className="flex gap-2 text-sm">
+            <span className="text-green-500 flex-shrink-0">✓</span>
+            <span className="text-green-600 dark:text-green-400">{pro}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Cons */}
+      <div className="space-y-1.5">
+        {cons.map((con, i) => (
+          <div key={i} className="flex gap-2 text-sm">
+            <span className="text-red-500 flex-shrink-0">✗</span>
+            <span className="text-red-600 dark:text-red-400">{con}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Use when */}
+      <div className="pt-3 border-t border-border/50">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Use when</p>
+        <ul className="space-y-1">
+          {useWhen.map((use, i) => (
+            <li key={i} className="text-sm text-muted-foreground flex gap-2">
+              <span className="text-primary">→</span>
+              {use}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+);
+
+const LocationCard = () => (
+  <div className="rounded-xl border border-border bg-card overflow-hidden">
+    <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-5 py-4 border-b border-border">
+      <div className="flex items-center gap-3">
+        <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+          <Server className="w-5 h-5" />
+        </div>
+        <h3 className="font-bold text-lg text-foreground">Cache Location</h3>
+      </div>
+    </div>
+    
+    <div className="p-5">
+      <div className="space-y-4">
+        {[
+          { layer: "Client-side / browser", examples: "HTTP caching, localStorage, in-memory", color: "bg-blue-500" },
+          { layer: "CDN / edge", examples: "Static assets, API responses via Cache-Control & ETag", color: "bg-purple-500" },
+          { layer: "App-layer cache", examples: "In-process (Go map + LRU), Redis/Memcached for shared", color: "bg-green-500" },
+          { layer: "DB-level", examples: "Database's own buffer cache", color: "bg-orange-500" },
+        ].map((loc, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <div className={`w-2 h-2 rounded-full ${loc.color} mt-2 flex-shrink-0`} />
+            <div>
+              <p className="font-medium text-sm text-foreground">{loc.layer}</p>
+              <p className="text-sm text-muted-foreground">{loc.examples}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const LearnContent = () => (
   <SinglePageContent>
     <SectionTitle>Caching Patterns</SectionTitle>
 
-    {/* Cache Aside & Read Through */}
-    <TwoColumn>
-      <Column>
-        <DefinitionBox title="Cache Aside (Lazy Load)">
-          <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-            <li><strong>Cache-aside logic is in the app code</strong></li>
-            <li><strong>Read path:</strong> Look in cache. If miss, read from DB, put in cache. Return.</li>
-            <li><strong>Write path:</strong> Write to DB. Invalidate or update cache.</li>
-          </ul>
-          
-          <p className="text-green-600 dark:text-green-400 text-sm mb-2">
-            ✓ Simple, widely known, easy to implement<br/>
-            ✓ Cache is only filled for actually-used keys<br/>
-            ✓ DB is the source of truth. Cache can be blown away without data loss.
-          </p>
-          
-          <p className="text-red-600 dark:text-red-400 text-sm mb-3">
-            ✗ Stale data risk if you forget to invalidate or update on write<br/>
-            ✗ First read after invalidation is slower (cache miss - DB hit)<br/>
-            ✗ No built-in consistency. You decide when/how to invalidate
-          </p>
-          
-          <p className="text-sm font-semibold">Use when:</p>
-          <ul className="list-disc list-inside text-sm text-muted-foreground">
-            <li>Reads &gt;&gt; writes</li>
-            <li>Stale data is acceptable for a short time</li>
-            <li>You want explicit, app-level control</li>
-          </ul>
-        </DefinitionBox>
-      </Column>
+    {/* Main patterns grid */}
+    <div className="grid md:grid-cols-2 gap-5 mb-8">
+      <PatternCard
+        title="Cache Aside (Lazy Load)"
+        icon={<Database className="w-5 h-5" />}
+        mechanics={[
+          { label: "Read", text: "Check cache → miss → read DB → populate cache → return" },
+          { label: "Write", text: "Write to DB → invalidate or update cache" },
+        ]}
+        pros={[
+          "Simple, widely known, easy to implement",
+          "Cache only filled for actually-used keys",
+          "DB is source of truth — cache can be cleared safely",
+        ]}
+        cons={[
+          "Stale data if you forget to invalidate on write",
+          "First read after invalidation is slower (cache miss)",
+          "No built-in consistency — you decide when to invalidate",
+        ]}
+        useWhen={[
+          "Reads >> writes",
+          "Stale data is acceptable briefly",
+          "You want explicit, app-level control",
+        ]}
+      />
       
-      <Column>
-        <DefinitionBox title="Read Through">
-          <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-            <li><strong>Similar to cache-aside, but logic lives in the cache layer/library</strong></li>
-            <li><strong>Read path:</strong> If cache misses: Cache calls a loader you registered (e.g. a function that hits the DB). Stores and returns it.</li>
-            <li><strong>Writes</strong> are still usually: app writes DB and invalidates cache (or uses write-through/write-behind)</li>
-          </ul>
-          
-          <p className="text-green-600 dark:text-green-400 text-sm mb-2">
-            ✓ Same benefits as cache-aside for reads, but…<br/>
-            ✓ Cache logic is <strong>centralised</strong> in cache library/infra<br/>
-            &nbsp;&nbsp;• Less boilerplate in app code<br/>
-            &nbsp;&nbsp;• Can reuse same loader logic across services
-          </p>
-          
-          <p className="text-red-600 dark:text-red-400 text-sm mb-3">
-            ✗ Slightly more "magic", harder to reason about if abused<br/>
-            ✗ You still must handle writes carefully (invalidations)<br/>
-            ✗ If your loader is slow or throws, cache performance tanks
-          </p>
-          
-          <p className="text-sm font-semibold">Use when:</p>
-          <ul className="list-disc list-inside text-sm text-muted-foreground">
-            <li>Using a caching library/framework that supports it nicely (e.g. Go in-process caches, Spring)</li>
-            <li>You want consistent loading behaviour across many call sites</li>
-          </ul>
-        </DefinitionBox>
-      </Column>
-    </TwoColumn>
+      <PatternCard
+        title="Read Through"
+        icon={<Zap className="w-5 h-5" />}
+        mechanics={[
+          { label: "Read", text: "Cache auto-calls your loader on miss → stores & returns" },
+          { label: "Write", text: "Usually: write DB → invalidate cache" },
+        ]}
+        pros={[
+          "Same benefits as cache-aside for reads",
+          "Cache logic centralised in library/infra",
+          "Less boilerplate, reusable loaders across services",
+        ]}
+        cons={[
+          'More "magic" — harder to reason about if abused',
+          "Still must handle writes carefully (invalidations)",
+          "If loader is slow/throws, cache performance tanks",
+        ]}
+        useWhen={[
+          "Using a caching library that supports it (Go, Spring)",
+          "You want consistent loading across call sites",
+        ]}
+      />
+      
+      <PatternCard
+        title="Write-through"
+        icon={<Clock className="w-5 h-5" />}
+        mechanics={[
+          { label: "Write", text: "App writes cache → cache synchronously writes DB" },
+          { label: "Read", text: "Always from cache (or read-through)" },
+        ]}
+        pros={[
+          "Cache and DB always in sync",
+          'Good for KV where cache is "front", DB is "backing store"',
+        ]}
+        cons={[
+          "Write latency (synchronous DB write)",
+          "If DB is down, writes fail (no buffering)",
+          "Not great for multi-row updates/transactions",
+        ]}
+        useWhen={[
+          "Reads are very hot, must always be in cache",
+          "You're ok paying extra cost on writes",
+        ]}
+      />
+      
+      <PatternCard
+        title="Write-behind / Write-back"
+        icon={<RefreshCw className="w-5 h-5" />}
+        mechanics={[
+          { label: "Write", text: "Write to cache → ack success → flush to DB async" },
+          { label: "Read", text: "Always from cache (or read-through)" },
+        ]}
+        pros={[
+          "Very fast writes — DB latency hidden",
+          "Can batch DB operations",
+          "Great when data tolerates lag before persisting",
+        ]}
+        cons={[
+          "Data loss if cache dies before flushing",
+          "Harder failure modes — DB & cache can diverge",
+          "Complexity in retry/batch logic, ordering issues",
+        ]}
+        useWhen={[
+          "Metrics / analytics buffers",
+          "Non-critical counters, logs, temporary stats",
+        ]}
+      />
+    </div>
 
-    {/* Write-through & Write-behind */}
-    <TwoColumn>
-      <Column>
-        <DefinitionBox title="Write-through">
-          <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-            <li><strong>On write:</strong> App writes to cache. Cache synchronously writes to DB.</li>
-            <li><strong>On read:</strong> App reads from cache only (or read-through behaviour)</li>
-          </ul>
-          
-          <p className="text-green-600 dark:text-green-400 text-sm mb-2">
-            ✓ Cache and DB are always in sync<br/>
-            ✓ Good for KV use cases where cache is "front" and DB is "backing store"
-          </p>
-          
-          <p className="text-red-600 dark:text-red-400 text-sm mb-3">
-            ✗ Write Latency<br/>
-            ✗ If DB is down, writes fail (no buffering)<br/>
-            ✗ Still not great for multi-row updates/transactions
-          </p>
-          
-          <p className="text-sm font-semibold">Use when:</p>
-          <ul className="list-disc list-inside text-sm text-muted-foreground">
-            <li>Reads are very hot, and you want them always in cache</li>
-            <li>When you're ok paying extra cost on writes</li>
-          </ul>
-        </DefinitionBox>
-      </Column>
+    {/* Bottom row */}
+    <div className="grid md:grid-cols-2 gap-5 mb-8">
+      <PatternCard
+        title="Refresh-ahead / Background"
+        icon={<AlertTriangle className="w-5 h-5" />}
+        description="Cache-aside or read-through, but a background job proactively refreshes values before they expire."
+        mechanics={[]}
+        pros={[
+          "Reduces user-facing cache misses for hot keys",
+          "Keeps data fresher with fewer stale-window gaps",
+        ]}
+        cons={[
+          "Extra complexity — need to track hot keys",
+          "Can waste work refreshing unused keys",
+          "Can cause burst DB traffic if done naively",
+        ]}
+        useWhen={[
+          "Expensive-to-compute, frequently-read data",
+          "Want to avoid spikes of cache misses",
+        ]}
+      />
       
-      <Column>
-        <DefinitionBox title="Write-behind / Write-back">
-          <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-            <li><strong>On write:</strong> Write to cache. Cache acknowledges success. Cache flushes changes to DB asynchronously.</li>
-            <li><strong>On read:</strong> App reads from cache only (or read-through behaviour)</li>
-          </ul>
-          
-          <p className="text-green-600 dark:text-green-400 text-sm mb-2">
-            ✓ Very fast writes as DB latency hidden<br/>
-            ✓ Can batch DB operations<br/>
-            ✓ Great when data can tolerate a bit of lag before persisting
-          </p>
-          
-          <p className="text-red-600 dark:text-red-400 text-sm mb-3">
-            ✗ If cache node dies before flushing there is data loss<br/>
-            ✗ Harder failure modes: DB & cache can diverge<br/>
-            ✗ Complexity in retry/batch logic. Ordering issues<br/>
-            ✗ Inconsistent reads if some writes haven't hit DB yet
-          </p>
-          
-          <p className="text-sm font-semibold">Use when:</p>
-          <ul className="list-disc list-inside text-sm text-muted-foreground">
-            <li>Metrics / analytics buffers</li>
-            <li>Non-critical counters, logs, temporary stats</li>
-          </ul>
-        </DefinitionBox>
-      </Column>
-    </TwoColumn>
-
-    {/* Refresh-ahead & Cache Location */}
-    <TwoColumn>
-      <Column>
-        <DefinitionBox title="Refresh-ahead / Background">
-          <p className="text-sm mb-3">
-            Cache-aside or read-through, but before a cached value expires, a background job proactively refreshes it.
-          </p>
-          
-          <p className="text-green-600 dark:text-green-400 text-sm mb-2">
-            ✓ Reduces user-facing cache misses for hot keys<br/>
-            ✓ Keeps data fresher with fewer stale-window gaps
-          </p>
-          
-          <p className="text-red-600 dark:text-red-400 text-sm mb-3">
-            ✗ Extra complexity. Need to track hot keys<br/>
-            ✗ Can waste work refreshing keys that aren't actually used<br/>
-            ✗ Can cause burst traffic to DB if done naively
-          </p>
-          
-          <p className="text-sm font-semibold">Use when:</p>
-          <ul className="list-disc list-inside text-sm text-muted-foreground">
-            <li>Expensive-to-compute, frequently-read data where occasional stale is ok</li>
-            <li>But you want to avoid spikes of cache misses</li>
-          </ul>
-        </DefinitionBox>
-      </Column>
-      
-      <Column>
-        <DefinitionBox title="Cache Location">
-          <ul className="list-disc list-inside space-y-2 text-sm">
-            <li><strong>Client-side / browser:</strong> HTTP caching, localStorage, in-memory</li>
-            <li><strong>CDN / edge:</strong> static assets, some API responses via Cache-Control & ETag</li>
-            <li><strong>App-layer cache:</strong>
-              <ul className="list-disc list-inside ml-4 text-muted-foreground">
-                <li>In-process cache (Go map + LRU, Bigtable of structs, etc.)</li>
-                <li>Redis/Memcached for shared cache</li>
-              </ul>
-            </li>
-            <li><strong>DB-level:</strong> DBs own buffer cache</li>
-          </ul>
-        </DefinitionBox>
-      </Column>
-    </TwoColumn>
+      <LocationCard />
+    </div>
 
     {/* Summary comparison */}
     <Callout type="info" title="Quick Comparison">
@@ -175,42 +240,42 @@ const LearnContent = () => (
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="text-left py-2 pr-4">Pattern</th>
-              <th className="text-left py-2 pr-4">Read Logic</th>
-              <th className="text-left py-2 pr-4">Write Logic</th>
-              <th className="text-left py-2">Consistency</th>
+              <th className="text-left py-2.5 pr-4 font-semibold">Pattern</th>
+              <th className="text-left py-2.5 pr-4 font-semibold">Read Logic</th>
+              <th className="text-left py-2.5 pr-4 font-semibold">Write Logic</th>
+              <th className="text-left py-2.5 font-semibold">Consistency</th>
             </tr>
           </thead>
-          <tbody>
-            <tr className="border-b border-border/50">
-              <td className="py-2 pr-4 font-medium">Cache Aside</td>
-              <td className="py-2 pr-4">App checks cache → DB</td>
-              <td className="py-2 pr-4">App writes DB, invalidates cache</td>
-              <td className="py-2">Eventually consistent</td>
+          <tbody className="text-muted-foreground">
+            <tr className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+              <td className="py-2.5 pr-4 font-medium text-foreground">Cache Aside</td>
+              <td className="py-2.5 pr-4">App checks cache → DB</td>
+              <td className="py-2.5 pr-4">App writes DB, invalidates cache</td>
+              <td className="py-2.5"><span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs">Eventual</span></td>
             </tr>
-            <tr className="border-b border-border/50">
-              <td className="py-2 pr-4 font-medium">Read Through</td>
-              <td className="py-2 pr-4">Cache auto-loads from DB</td>
-              <td className="py-2 pr-4">App writes DB, invalidates cache</td>
-              <td className="py-2">Eventually consistent</td>
+            <tr className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+              <td className="py-2.5 pr-4 font-medium text-foreground">Read Through</td>
+              <td className="py-2.5 pr-4">Cache auto-loads from DB</td>
+              <td className="py-2.5 pr-4">App writes DB, invalidates cache</td>
+              <td className="py-2.5"><span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs">Eventual</span></td>
             </tr>
-            <tr className="border-b border-border/50">
-              <td className="py-2 pr-4 font-medium">Write Through</td>
-              <td className="py-2 pr-4">From cache</td>
-              <td className="py-2 pr-4">Cache writes to DB sync</td>
-              <td className="py-2">Strong</td>
+            <tr className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+              <td className="py-2.5 pr-4 font-medium text-foreground">Write Through</td>
+              <td className="py-2.5 pr-4">From cache</td>
+              <td className="py-2.5 pr-4">Cache writes to DB sync</td>
+              <td className="py-2.5"><span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-xs">Strong</span></td>
             </tr>
-            <tr className="border-b border-border/50">
-              <td className="py-2 pr-4 font-medium">Write Behind</td>
-              <td className="py-2 pr-4">From cache</td>
-              <td className="py-2 pr-4">Cache writes to DB async</td>
-              <td className="py-2">Eventual (risk of loss)</td>
+            <tr className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+              <td className="py-2.5 pr-4 font-medium text-foreground">Write Behind</td>
+              <td className="py-2.5 pr-4">From cache</td>
+              <td className="py-2.5 pr-4">Cache writes to DB async</td>
+              <td className="py-2.5"><span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 text-xs">Eventual + risk</span></td>
             </tr>
-            <tr>
-              <td className="py-2 pr-4 font-medium">Refresh Ahead</td>
-              <td className="py-2 pr-4">From cache (pre-warmed)</td>
-              <td className="py-2 pr-4">Background refresh</td>
-              <td className="py-2">Eventually consistent</td>
+            <tr className="hover:bg-muted/30 transition-colors">
+              <td className="py-2.5 pr-4 font-medium text-foreground">Refresh Ahead</td>
+              <td className="py-2.5 pr-4">From cache (pre-warmed)</td>
+              <td className="py-2.5 pr-4">Background refresh</td>
+              <td className="py-2.5"><span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs">Eventual</span></td>
             </tr>
           </tbody>
         </table>
