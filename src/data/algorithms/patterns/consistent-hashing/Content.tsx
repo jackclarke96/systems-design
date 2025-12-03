@@ -138,16 +138,16 @@ export const ConsistentHashingContent = () => (
 
     {/* Add/Remove */}
     <div className="grid md:grid-cols-2 gap-4">
-      <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/50 rounded-xl p-4">
-        <p className="text-sm">
-          <strong className="text-green-700 dark:text-green-400">Added:</strong>{" "}
-          <span className="text-muted-foreground">Move anticlockwise → find previous server → migrate keys between to new server.</span>
+      <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/50 rounded-xl p-5">
+        <p className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">When adding a node:</p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          From the new node, move anticlockwise until you find the previous server. All keys in that range now belong to the new node—migrate them over.
         </p>
       </div>
-      <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-xl p-4">
-        <p className="text-sm">
-          <strong className="text-red-700 dark:text-red-400">Removed:</strong>{" "}
-          <span className="text-muted-foreground">Move anticlockwise → find previous → migrate to next clockwise server.</span>
+      <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-xl p-5">
+        <p className="text-sm font-medium text-red-700 dark:text-red-400 mb-2">When removing a node:</p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          From the removed node, move anticlockwise to find the previous server. Migrate all keys in that range to the next clockwise server.
         </p>
       </div>
     </div>
