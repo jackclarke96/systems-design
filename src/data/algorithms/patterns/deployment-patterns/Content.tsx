@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Quiz } from "@/components/Quiz";
 import { Flag, Server, Globe, Shield, RefreshCw, AlertTriangle, CheckCircle, Zap, Clock, Database } from "lucide-react";
 
@@ -61,9 +62,37 @@ const BulletList = ({ items, bulletColor = "text-primary" }: { items: (string | 
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-6">
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
         <p className="text-sm">
           Safe deployments and controlled feature releases are critical for maintaining reliability. 
           This covers feature flags for gradual rollout, deployment strategies like blue/green and canary, 
@@ -313,6 +342,10 @@ export const Content = () => {
           </li>
         </ul>
       </div>
+        </div>
+      ) : (
+        <DeploymentPatternsQuiz />
+      )}
     </div>
   );
 };

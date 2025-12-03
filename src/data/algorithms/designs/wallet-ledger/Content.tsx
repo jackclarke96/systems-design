@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Quiz } from "@/components/Quiz";
 import { Wallet, Database, Send, Shield, RefreshCw, Search, Layers, Clock, CheckCircle, Key, List } from "lucide-react";
 
@@ -72,9 +73,37 @@ const DataModelCard = ({ title, fields }: { title: string; fields: string[] }) =
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-6">
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
         <p className="text-sm">
           A wallet/ledger service is the core of any fintech platform—it records all money movements 
           in an append-only, double-entry ledger, exposes APIs for transfers/balance queries, and emits 
@@ -341,6 +370,10 @@ export const Content = () => {
           </li>
         </ul>
       </div>
+        </div>
+      ) : (
+        <WalletLedgerQuiz />
+      )}
     </div>
   );
 };

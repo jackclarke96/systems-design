@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Section, Paragraph } from "@/components/AlgorithmContent";
 import { Quiz } from "@/components/Quiz";
 import { MessageSquare, Inbox, Send, CheckCircle, AlertTriangle, Database, Layers, Key } from "lucide-react";
@@ -72,9 +73,37 @@ const ComparisonBox = ({ title, children }: { title: string; children: React.Rea
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
-    <div className="space-y-8">
-      <Section>
+    <div className="space-y-6">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-8">
+          <Section>
         <Paragraph>
           Message queues and event streaming are fundamental to distributed systems. Understanding delivery 
           guarantees, idempotency, and patterns like transactional outbox is crucial for building reliable systems.
@@ -295,6 +324,10 @@ export const Content = () => {
           </tbody>
         </table>
       </div>
+        </div>
+      ) : (
+        <MessagingQuiz />
+      )}
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Quiz } from "@/components/Quiz";
 import { Scale, Database, Search, AlertTriangle, CheckCircle, FileText, RefreshCw, Shield } from "lucide-react";
 
@@ -68,9 +69,37 @@ const StatusBadge = ({ status, color }: { status: string; color: string }) => (
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-6">
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
         <p className="text-sm italic text-center">
           "Balances are a cache; the ledger is the truth. We reconcile the two regularly."
         </p>
@@ -292,6 +321,10 @@ export const Content = () => {
           your system is correctly tracking money. Run it regularly, alert on anomalies, and investigate quickly.
         </p>
       </div>
+        </div>
+      ) : (
+        <ReconciliationQuiz />
+      )}
     </div>
   );
 };

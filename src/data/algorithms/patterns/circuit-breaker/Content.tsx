@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Section, Paragraph } from "@/components/AlgorithmContent";
 import { Quiz } from "@/components/Quiz";
 import { Zap, CheckCircle, XCircle, Clock, Activity, AlertTriangle } from "lucide-react";
@@ -59,9 +60,37 @@ const BulletList = ({ items }: { items: (string | React.ReactNode)[] }) => (
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
-    <div className="space-y-8">
-      <Section>
+    <div className="space-y-6">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-8">
+          <Section>
         <Paragraph>
           The Circuit Breaker pattern prevents cascading failures by detecting when a dependency is struggling 
           and failing fast instead of waiting for timeouts. Named after electrical circuit breakers that 
@@ -225,6 +254,10 @@ export const Content = () => {
           <code className="text-xs text-muted-foreground">opossum</code>
         </div>
       </div>
+        </div>
+      ) : (
+        <CircuitBreakerQuiz />
+      )}
     </div>
   );
 };
