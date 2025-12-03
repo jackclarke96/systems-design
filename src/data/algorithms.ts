@@ -9,6 +9,7 @@ import { cachingPatterns } from "./algorithms/patterns/caching-patterns";
 import { circuitBreakerPattern } from "./algorithms/patterns/circuit-breaker";
 import { rateLimitingPattern } from "./algorithms/patterns/rate-limiting";
 import { retriesDlqPattern } from "./algorithms/patterns/retries-dlq";
+import { messagingDeliveryPattern } from "./algorithms/patterns/messaging-delivery";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
@@ -22,6 +23,7 @@ const patternsTopics = [
   circuitBreakerPattern,
   rateLimitingPattern,
   retriesDlqPattern,
+  messagingDeliveryPattern,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
