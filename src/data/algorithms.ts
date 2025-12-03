@@ -32,6 +32,16 @@ const designsTopics = [
   }] : []),
 ];
 
+const dataTopics = [
+  // Placeholder - topics will be added here
+  ...(FEATURES.SHOW_EXAMPLES ? [{
+    ...componentShowcase,
+    id: "example-components-3",
+    title: "Component Showcase",
+    category: "data",
+  }] : []),
+];
+
 export const algorithmCategories: Category[] = [
   {
     id: "patterns",
@@ -42,5 +52,10 @@ export const algorithmCategories: Category[] = [
     id: "designs",
     name: "Designs",
     algorithms: designsTopics,
+  },
+  {
+    id: "data",
+    name: "Data",
+    algorithms: dataTopics,
   },
 ];
