@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Quiz, QuizQuestion } from "@/components/Quiz";
+import acidWalFlow from "@/assets/acid-wal-flow.png";
+import acidMvcc from "@/assets/acid-mvcc.png";
+import acid2pc from "@/assets/acid-2pc.png";
 
 const Heading = ({ children }: { children: React.ReactNode }) => (
   <h4 className="font-semibold text-foreground mb-2">{children}</h4>
@@ -175,16 +178,43 @@ const LearnContent = () => (
           </p>
         </div>
       </div>
+
+      {/* WAL Diagram */}
+      <div className="bg-card border border-border rounded-xl p-5">
+        <p className="text-sm font-medium text-foreground mb-3">Write-Ahead Log (WAL) Flow</p>
+        <div className="flex justify-center">
+          <img 
+            src={acidWalFlow} 
+            alt="Write-Ahead Log flow diagram" 
+            className="max-w-md w-full rounded-lg"
+          />
+        </div>
+        <p className="text-xs text-muted-foreground text-center mt-3">
+          1. Write to log first → 2. Confirm to client → 3. Apply to database. On crash, replay the log.
+        </p>
+      </div>
     </section>
 
     {/* MVCC Callout */}
-    <Callout type="definition" title="MVCC (Multi-Version Concurrency Control)">
-      <p className="text-sm leading-relaxed">
-        Instead of locking rows, each write creates a <strong>new version</strong> of the row. 
-        Readers access a snapshot without blocking writers. This avoids deadlocks and improves 
-        concurrency, but uses more storage for version history.
+    <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+      <Callout type="definition" title="MVCC (Multi-Version Concurrency Control)">
+        <p className="text-sm leading-relaxed">
+          Instead of locking rows, each write creates a <strong>new version</strong> of the row. 
+          Readers access a snapshot without blocking writers. This avoids deadlocks and improves 
+          concurrency, but uses more storage for version history.
+        </p>
+      </Callout>
+      <div className="flex justify-center">
+        <img 
+          src={acidMvcc} 
+          alt="MVCC snapshot diagram" 
+          className="max-w-sm w-full rounded-lg"
+        />
+      </div>
+      <p className="text-xs text-muted-foreground text-center">
+        T1 reads old version while T2 writes new version—no blocking.
       </p>
-    </Callout>
+    </div>
 
     {/* Isolation Levels & Anomalies */}
     <section>
@@ -304,18 +334,22 @@ const LearnContent = () => (
           <p className="text-sm text-muted-foreground leading-relaxed">
             Guarantees <strong>strong atomicity</strong> across services/DBs. A coordinator asks all participants to prepare, then commits or aborts based on responses.
           </p>
-          <div className="space-y-2 text-xs">
+          <div className="flex justify-center py-2">
+            <img 
+              src={acid2pc} 
+              alt="Two-Phase Commit flow" 
+              className="w-full max-w-xs rounded-lg"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground text-center">Phase 1: Prepare → Phase 2: Commit/Abort</p>
+          <div className="space-y-2 text-xs border-t border-amber-200 dark:border-amber-900/50 pt-3">
             <div className="flex items-start gap-2">
               <span className="text-red-500">⚠</span>
-              <span className="text-muted-foreground">Slow, coordinator is a single point of failure, can block participants</span>
+              <span className="text-muted-foreground">Slow, coordinator is single point of failure</span>
             </div>
             <div>
               <p className="font-medium text-foreground mb-1">Use when:</p>
-              <p className="text-muted-foreground">Few participants, low latency sensitivity, must have cross-resource atomicity</p>
-            </div>
-            <div>
-              <p className="font-medium text-foreground mb-1">Example:</p>
-              <p className="text-muted-foreground">Single company, multiple DBs, same insert in one atomic tx. If either fails, coordinator tells both to roll back.</p>
+              <p className="text-muted-foreground">Few participants, must have cross-resource atomicity</p>
             </div>
           </div>
         </div>
