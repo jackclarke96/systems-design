@@ -318,6 +318,61 @@ export const RateLimitingQuiz = () => {
       ],
       correctIndex: 2,
       explanation: "Redis provides atomic operations and shared state needed for consistent rate limiting across instances."
+    },
+    {
+      question: "What HTTP header should accompany a 429 response?",
+      options: [
+        "X-Rate-Limit-Reset",
+        "Retry-After",
+        "Cache-Control",
+        "Content-Length"
+      ],
+      correctIndex: 1,
+      explanation: "Retry-After tells the client when they can retry. Additional headers like X-RateLimit-Remaining are also helpful."
+    },
+    {
+      question: "Which rate limiting algorithm is best for APIs that need to handle legitimate traffic bursts?",
+      options: [
+        "Leaky Bucket",
+        "Fixed Window",
+        "Token Bucket",
+        "Sliding Window Log"
+      ],
+      correctIndex: 2,
+      explanation: "Token Bucket allows bursts up to the bucket capacity while maintaining a long-term average rate."
+    },
+    {
+      question: "What is a 'race condition' in distributed rate limiting?",
+      options: [
+        "When two servers process the same request",
+        "When multiple requests check and increment the counter non-atomically, allowing more than the limit",
+        "When the rate limit is too high",
+        "When requests are processed out of order"
+      ],
+      correctIndex: 1,
+      explanation: "Without atomic operations (like Redis INCR), multiple servers might read the same count and all allow a request, exceeding the limit."
+    },
+    {
+      question: "What is the Sliding Window Counter algorithm?",
+      options: [
+        "A combination of fixed windows with weighted averaging",
+        "A queue-based algorithm",
+        "A token-based algorithm",
+        "A hash-based algorithm"
+      ],
+      correctIndex: 0,
+      explanation: "Sliding Window Counter combines the current and previous window counts with a weighted average based on position in the current window."
+    },
+    {
+      question: "Why might you implement different rate limits for different API endpoints?",
+      options: [
+        "To make the code more complex",
+        "Because some operations are more expensive or sensitive than others",
+        "To confuse attackers",
+        "It's not recommended"
+      ],
+      correctIndex: 1,
+      explanation: "Write operations, expensive queries, or sensitive endpoints (like login) may need stricter limits than simple read operations."
     }
   ];
 

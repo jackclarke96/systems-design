@@ -285,6 +285,61 @@ export const CircuitBreakerQuiz = () => {
       ],
       correctIndex: 1,
       explanation: "Failing fast prevents resources (threads, connections) from being tied up waiting for timeouts."
+    },
+    {
+      question: "What should happen when a circuit breaker is open and a request comes in?",
+      options: [
+        "Wait for the dependency to recover",
+        "Return a fallback response or cached data",
+        "Retry the request 3 times",
+        "Log an error and crash"
+      ],
+      correctIndex: 1,
+      explanation: "When open, you should provide fallback behavior - cached data, default values, or a graceful degradation message."
+    },
+    {
+      question: "How does Half-Open state transition back to Closed?",
+      options: [
+        "After a fixed time period",
+        "When a single test request succeeds",
+        "When several consecutive test requests succeed",
+        "When an admin manually resets it"
+      ],
+      correctIndex: 2,
+      explanation: "Half-Open typically requires multiple consecutive successful requests to prove the dependency has truly recovered before closing."
+    },
+    {
+      question: "What metrics should you track for circuit breaker tuning?",
+      options: [
+        "Only success/failure counts",
+        "Failure rate, latency, and request volume",
+        "Just CPU usage",
+        "Only memory consumption"
+      ],
+      correctIndex: 1,
+      explanation: "Track failure rate, latency percentiles, and request volume to properly tune thresholds and timeout durations."
+    },
+    {
+      question: "Should each endpoint have its own circuit breaker or share one per service?",
+      options: [
+        "Always share one breaker per service",
+        "Always use one breaker per endpoint",
+        "It depends - critical endpoints may need separate breakers",
+        "Circuit breakers should be global"
+      ],
+      correctIndex: 2,
+      explanation: "Critical endpoints may need their own breakers so a failing endpoint doesn't trip the breaker for healthy ones on the same service."
+    },
+    {
+      question: "What is the 'reset timeout' in a circuit breaker?",
+      options: [
+        "How long to wait before retrying failed requests",
+        "How long the breaker stays Open before trying Half-Open",
+        "The maximum request duration",
+        "Time between health checks"
+      ],
+      correctIndex: 1,
+      explanation: "Reset timeout is how long the breaker stays Open before transitioning to Half-Open to test if the dependency has recovered."
     }
   ];
 

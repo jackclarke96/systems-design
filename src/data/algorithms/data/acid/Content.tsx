@@ -87,6 +87,61 @@ const quizQuestions: QuizQuestion[] = [
     correctIndex: 1,
     explanation: "Durability ensures that once a transaction is committed, it remains committed even if the system crashes. This is typically achieved by flushing to disk and using write-ahead logs.",
   },
+  {
+    question: "What is the Write-Ahead Log (WAL) used for?",
+    options: [
+      "Caching frequently accessed data",
+      "Recording changes before applying them, enabling recovery after crashes",
+      "Encrypting data at rest",
+      "Balancing load across servers",
+    ],
+    correctIndex: 1,
+    explanation: "WAL writes changes to a log before applying them to data files. After a crash, the database replays the log to recover committed transactions.",
+  },
+  {
+    question: "What is the difference between Read Committed and Repeatable Read?",
+    options: [
+      "Read Committed is faster",
+      "Repeatable Read prevents non-repeatable reads by keeping a consistent snapshot",
+      "Read Committed provides stronger guarantees",
+      "There is no difference",
+    ],
+    correctIndex: 1,
+    explanation: "Read Committed only sees committed data but may see different values if re-reading. Repeatable Read keeps a snapshot so re-reads return the same data.",
+  },
+  {
+    question: "What problem do Sagas solve in microservices?",
+    options: [
+      "Network latency",
+      "Maintaining consistency across multiple services without distributed locks",
+      "Data encryption",
+      "Load balancing",
+    ],
+    correctIndex: 1,
+    explanation: "Sagas split a distributed transaction into local transactions with compensating actions. If one fails, previous steps are undone via compensation.",
+  },
+  {
+    question: "What is 'write skew' anomaly?",
+    options: [
+      "When two transactions write to the same row simultaneously",
+      "When two transactions read overlapping data and make decisions that conflict",
+      "When writes are slower than reads",
+      "When the database runs out of disk space",
+    ],
+    correctIndex: 1,
+    explanation: "Write skew occurs when two transactions read the same data, make non-conflicting writes based on that read, but together violate a constraint.",
+  },
+  {
+    question: "Which isolation level prevents all anomalies including phantom reads?",
+    options: [
+      "Read Uncommitted",
+      "Read Committed",
+      "Repeatable Read",
+      "Serializable",
+    ],
+    correctIndex: 3,
+    explanation: "Serializable is the strictest level, preventing dirty reads, non-repeatable reads, and phantom reads by ensuring transactions appear to execute serially.",
+  },
 ];
 
 export const ACIDContent = () => {

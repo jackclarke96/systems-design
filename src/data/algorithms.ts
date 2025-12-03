@@ -56,10 +56,15 @@ const designsTopics = [
   }] : []),
 ];
 
-const dataTopics = [
+// Data Fundamentals - core database concepts
+const dataFundamentalsTopics = [
   acidTopic,
   capTopic,
   sqlVsNosqlTopic,
+];
+
+// Fintech - finance-specific patterns and concepts
+const fintechTopics = [
   financeTopic,
   paymentLifecycleTopic,
   reconciliationTopic,
@@ -67,7 +72,7 @@ const dataTopics = [
     ...componentShowcase,
     id: "example-components-3",
     title: "Component Showcase",
-    category: "data",
+    category: "fintech",
   }] : []),
 ];
 
@@ -84,7 +89,12 @@ export const algorithmCategories: Category[] = [
   },
   {
     id: "data",
-    name: "Data",
-    algorithms: dataTopics,
+    name: "Data Fundamentals",
+    algorithms: dataFundamentalsTopics,
+  },
+  {
+    id: "fintech",
+    name: "Fintech",
+    algorithms: fintechTopics,
   },
 ];
