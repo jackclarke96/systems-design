@@ -5,6 +5,7 @@ import { alg4pt2 } from "./algorithms/4.2-minimal-tree";
 import { FEATURES } from "@/config/features";
 import { consistentHashing } from "./algorithms/patterns/consistent-hashing";
 import { acidTopic } from "./algorithms/data/acid";
+import { capTopic } from "./algorithms/data/cap";
 
 
 const patternsTopics = [
@@ -35,6 +36,7 @@ const designsTopics = [
 
 const dataTopics = [
   acidTopic,
+  capTopic,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-3",
