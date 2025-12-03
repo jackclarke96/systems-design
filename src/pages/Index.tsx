@@ -86,7 +86,13 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mb-6">
                 Learn scalable system architecture and design patterns
               </p>
-              <ContentTabs algorithm={selectedAlgorithm} />
+              {selectedAlgorithm.singlePage ? (
+                <div className="prose prose-sm md:prose-base max-w-none">
+                  {selectedAlgorithm.problem}
+                </div>
+              ) : (
+                <ContentTabs algorithm={selectedAlgorithm} />
+              )}
             </article>
           )}
         </main>

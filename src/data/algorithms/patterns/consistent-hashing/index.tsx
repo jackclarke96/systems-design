@@ -1,16 +1,14 @@
 import { Algorithm } from "@/types/algorithms";
-import { Problem } from "./Problem";
-import { AlgorithmSection } from "./Algorithm";
-import { Solution } from "./Solution";
-import { Improvements } from "./Improvements";
+import { ConsistentHashingContent } from "./Content";
 
 export const consistentHashing: Algorithm = {
   id: "consistent-hashing",
-  title: "Consistent Hashing",
+  title: "Pattern: Consistent Hashing (Sharding)",
   category: "patterns",
+  singlePage: true,
   
-  problem: <Problem />,
-  algorithm: <AlgorithmSection />,
-  solution: <Solution />,
-  improvements: <Improvements />,
+  problem: <ConsistentHashingContent />,
+  algorithm: null,
+  solution: null,
+  improvements: null,
 };
