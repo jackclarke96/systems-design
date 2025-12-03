@@ -9,6 +9,7 @@ import { cachingPatterns } from "./algorithms/patterns/caching-patterns";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
+import { financeTopic } from "./algorithms/data/finance";
 
 
 const patternsTopics = [
@@ -43,6 +44,7 @@ const dataTopics = [
   acidTopic,
   capTopic,
   sqlVsNosqlTopic,
+  financeTopic,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-3",
