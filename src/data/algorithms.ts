@@ -6,6 +6,7 @@ import { FEATURES } from "@/config/features";
 import { consistentHashing } from "./algorithms/patterns/consistent-hashing";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
+import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
 
 
 const patternsTopics = [
@@ -37,6 +38,7 @@ const designsTopics = [
 const dataTopics = [
   acidTopic,
   capTopic,
+  sqlVsNosqlTopic,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-3",
