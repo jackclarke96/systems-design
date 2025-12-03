@@ -11,6 +11,7 @@ import { rateLimitingPattern } from "./algorithms/patterns/rate-limiting";
 import { retriesDlqPattern } from "./algorithms/patterns/retries-dlq";
 import { messagingDeliveryPattern } from "./algorithms/patterns/messaging-delivery";
 import { deploymentPatternsPattern } from "./algorithms/patterns/deployment-patterns";
+import { grpcAuthPattern } from "./algorithms/patterns/grpc-auth";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
@@ -30,6 +31,7 @@ const patternsTopics = [
   retriesDlqPattern,
   messagingDeliveryPattern,
   deploymentPatternsPattern,
+  grpcAuthPattern,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
