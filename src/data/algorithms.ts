@@ -3,22 +3,11 @@ import { componentShowcase } from "./componentExamples";
 import { alg4pt1 } from "./algorithms/4.1-bfs";
 import { alg4pt2 } from "./algorithms/4.2-minimal-tree";
 import { FEATURES } from "@/config/features";
-import { alg2pt1 } from "./algorithms/linked-lists/2.1-remove-dupes";
+import { consistentHashing } from "./algorithms/patterns/consistent-hashing";
 
 
 const patternsTopics = [
-  {
-    ...alg2pt1,
-    id: "caching",
-    title: "Caching Strategies",
-    category: "patterns",
-  },
-  {
-    ...alg4pt1,
-    id: "load-balancing",
-    title: "Load Balancing",
-    category: "patterns",
-  },
+  consistentHashing,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
