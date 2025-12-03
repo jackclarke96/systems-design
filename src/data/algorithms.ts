@@ -5,6 +5,7 @@ import { alg4pt2 } from "./algorithms/4.2-minimal-tree";
 import { FEATURES } from "@/config/features";
 import { consistentHashing } from "./algorithms/patterns/consistent-hashing";
 import { connectionPooling } from "./algorithms/patterns/connection-pooling";
+import { cachingPatterns } from "./algorithms/patterns/caching-patterns";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
@@ -13,6 +14,7 @@ import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
 const patternsTopics = [
   consistentHashing,
   connectionPooling,
+  cachingPatterns,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
