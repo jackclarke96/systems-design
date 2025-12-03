@@ -6,54 +6,52 @@ import { FEATURES } from "@/config/features";
 import { alg2pt1 } from "./algorithms/linked-lists/2.1-remove-dupes";
 
 
-const linkedListsAlgorithms = [
-  alg2pt1
-]
-const graphsAlgorithms = [
+const patternsTopics = [
+  {
+    ...alg2pt1,
+    id: "caching",
+    title: "Caching Strategies",
+    category: "patterns",
+  },
   {
     ...alg4pt1,
-    id: "route-between-nodes",
-    title: "4.1 Path from S to E",
-    category: "graphs",
+    id: "load-balancing",
+    title: "Load Balancing",
+    category: "patterns",
   },
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
-    title: "4.0 Example - Component Showcase",
-    category: "graphs",
+    title: "Component Showcase",
+    category: "patterns",
   }] : []),
 ];
 
 
-const treesAlgorithms = [
+const designsTopics = [
   {
     ...alg4pt2,
-    id: "minimal-bst",
-    title: "4.2 Minimal BST",
-    category: "trees",
+    id: "url-shortener",
+    title: "URL Shortener",
+    category: "designs",
   },
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-2",
-    title: "4.0 Example - Component Showcase",
-    category: "graphs",
+    title: "Component Showcase",
+    category: "designs",
   }] : []),
 ];
 
 export const algorithmCategories: Category[] = [
   {
-    id: "linkedlists",
-    name: "Linked Lists",
-    algorithms: linkedListsAlgorithms,
+    id: "patterns",
+    name: "Patterns",
+    algorithms: patternsTopics,
   },
   {
-    id: "graphs",
-    name: "Graphs",
-    algorithms: graphsAlgorithms,
-  },
-  {
-    id: "trees",
-    name: "Trees",
-    algorithms: treesAlgorithms,
+    id: "designs",
+    name: "Designs",
+    algorithms: designsTopics,
   },
 ];
