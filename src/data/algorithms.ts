@@ -14,6 +14,8 @@ import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
 import { financeTopic } from "./algorithms/data/finance";
+import { paymentLifecycleTopic } from "./algorithms/data/payment-lifecycle";
+import { reconciliationTopic } from "./algorithms/data/reconciliation";
 import { rateLimiterDesign } from "./algorithms/designs/rate-limiter";
 
 
@@ -55,6 +57,8 @@ const dataTopics = [
   capTopic,
   sqlVsNosqlTopic,
   financeTopic,
+  paymentLifecycleTopic,
+  reconciliationTopic,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-3",
