@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Section, Paragraph } from "@/components/AlgorithmContent";
 import { Quiz } from "@/components/Quiz";
 import { Shield, Server, Gauge, Clock, Database, AlertTriangle, CheckCircle, HelpCircle, Zap } from "lucide-react";
@@ -101,9 +102,37 @@ const AlgorithmCard = ({
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
-    <div className="space-y-8">
-      <Section>
+    <div className="space-y-6">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-8">
+          <Section>
         <Paragraph>
           A rate limiter controls the rate of traffic sent by a client or service. It's essential for 
           preventing abuse, ensuring fair usage, and protecting backend services from overload.
@@ -351,6 +380,10 @@ export const Content = () => {
           </tbody>
         </table>
       </div>
+        </div>
+      ) : (
+        <RateLimiterQuiz />
+      )}
     </div>
   );
 };

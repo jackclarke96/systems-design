@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Section, Paragraph } from "@/components/AlgorithmContent";
 import { Quiz } from "@/components/Quiz";
 import { BookOpen, Database, Layers, Shield, AlertTriangle, RefreshCw, Clock, Zap } from "lucide-react";
@@ -76,10 +77,38 @@ const SectionHeader = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
-    <div className="space-y-8">
-      <Section>
-        <Paragraph>
+    <div className="space-y-6">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-8">
+          <Section>
+            <Paragraph>
           Financial systems have unique requirements around auditability, correctness, and reliability. 
           These patterns are essential for building systems that handle money safely.
         </Paragraph>
@@ -263,6 +292,10 @@ export const Content = () => {
           </tbody>
         </table>
       </div>
+        </div>
+      ) : (
+        <FinanceQuiz />
+      )}
     </div>
   );
 };

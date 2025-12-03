@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Quiz } from "@/components/Quiz";
 import { CreditCard, BookOpen, ArrowRight, AlertTriangle, CheckCircle, RefreshCw, Clock, DollarSign } from "lucide-react";
 import paymentLifecycleStates from "@/assets/payment-lifecycle-states.png";
@@ -66,9 +67,37 @@ const StatusBadge = ({ status, color }: { status: string; color: string }) => (
 );
 
 export const Content = () => {
+  const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
+
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg w-fit">
+        <button
+          onClick={() => setActiveTab("learn")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "learn" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setActiveTab("quiz")}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            activeTab === "quiz" 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {activeTab === "learn" ? (
+        <div className="space-y-6">
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
         <p className="text-sm">
           Understanding how card payments flow through a system is essential for fintech engineering. 
           This covers the complete lifecycle from initiation to settlement, including ledger entries, 
@@ -333,6 +362,10 @@ export const Content = () => {
           </li>
         </ul>
       </div>
+        </div>
+      ) : (
+        <PaymentLifecycleQuiz />
+      )}
     </div>
   );
 };
