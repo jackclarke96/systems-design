@@ -14,6 +14,7 @@ import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
 import { financeTopic } from "./algorithms/data/finance";
+import { rateLimiterDesign } from "./algorithms/designs/rate-limiter";
 
 
 const patternsTopics = [
@@ -34,6 +35,7 @@ const patternsTopics = [
 
 
 const designsTopics = [
+  rateLimiterDesign,
   {
     ...alg4pt2,
     id: "url-shortener",
