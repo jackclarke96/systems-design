@@ -6,6 +6,9 @@ import { FEATURES } from "@/config/features";
 import { consistentHashing } from "./algorithms/patterns/consistent-hashing";
 import { connectionPooling } from "./algorithms/patterns/connection-pooling";
 import { cachingPatterns } from "./algorithms/patterns/caching-patterns";
+import { circuitBreakerPattern } from "./algorithms/patterns/circuit-breaker";
+import { rateLimitingPattern } from "./algorithms/patterns/rate-limiting";
+import { retriesDlqPattern } from "./algorithms/patterns/retries-dlq";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
@@ -16,6 +19,9 @@ const patternsTopics = [
   consistentHashing,
   connectionPooling,
   cachingPatterns,
+  circuitBreakerPattern,
+  rateLimitingPattern,
+  retriesDlqPattern,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
