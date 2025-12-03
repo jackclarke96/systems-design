@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Quiz, QuizQuestion } from "@/components/Quiz";
+import capNodes from "@/assets/cap-nodes.png";
+import capHashRing from "@/assets/cap-hash-ring.png";
+import capQuorumWrite from "@/assets/cap-quorum-write.png";
+import capMerkleTree from "@/assets/cap-merkle-tree.png";
 
 const Heading = ({ children }: { children: React.ReactNode }) => (
   <h4 className="font-semibold text-foreground mb-2">{children}</h4>
@@ -130,30 +134,43 @@ const LearnContent = () => (
   <div className="space-y-10">
     {/* CAP Theorem */}
     <section className="space-y-4">
-      <p className="text-sm text-muted-foreground leading-relaxed text-center">
-        In a distributed system, you can only guarantee <strong>two out of three</strong> properties at any time.
-      </p>
-
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-xl p-5">
-          <p className="font-bold text-blue-700 dark:text-blue-400 mb-2">Consistency</p>
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        <div className="flex-1 space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            All nodes see the same data at the same time. Every read receives the most recent write.
+            In a distributed system, you can only guarantee <strong>two out of three</strong> properties at any time.
           </p>
+
+          <div className="grid gap-3">
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-xl p-4">
+              <p className="font-bold text-blue-700 dark:text-blue-400 mb-1">Consistency</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                All nodes see the same data at the same time. Every read receives the most recent write.
+              </p>
+            </div>
+
+            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/50 rounded-xl p-4">
+              <p className="font-bold text-green-700 dark:text-green-400 mb-1">Availability</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Every request gets a response (even if it's not the most up-to-date data).
+              </p>
+            </div>
+
+            <div className="bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/50 rounded-xl p-4">
+              <p className="font-bold text-purple-700 dark:text-purple-400 mb-1">Partition Tolerance</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                The system continues to function even if network communication between nodes fails.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/50 rounded-xl p-5">
-          <p className="font-bold text-green-700 dark:text-green-400 mb-2">Availability</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Every request gets a response (even if it's not the most up-to-date data).
-          </p>
-        </div>
-
-        <div className="bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/50 rounded-xl p-5">
-          <p className="font-bold text-purple-700 dark:text-purple-400 mb-2">Partition Tolerance</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            The system continues to function even if network communication between nodes fails.
-          </p>
+        <div className="w-48 flex-shrink-0">
+          <img 
+            src={capNodes} 
+            alt="Three distributed nodes connected" 
+            className="w-full bg-white rounded-xl border border-border p-2"
+          />
+          <p className="text-xs text-center text-muted-foreground mt-2">Distributed nodes (n1, n2, n3)</p>
         </div>
       </div>
 
@@ -171,28 +188,39 @@ const LearnContent = () => (
         Partitioning & Replication
       </h2>
 
-      <div className="grid md:grid-cols-2 gap-5 mb-6">
-        <div className="bg-card border border-border rounded-xl p-5 space-y-3">
-          <h3 className="font-bold text-foreground">Data Partitioning (Sharding)</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            A single server can't hold everything. We <strong>split data into partitions</strong> stored across multiple servers.
-          </p>
-          <div className="text-xs space-y-1 text-muted-foreground">
-            <p><strong className="text-foreground">Key-based:</strong> Hash the key to determine partition</p>
-            <p><strong className="text-foreground">Range-based:</strong> Split by key ranges (A-M, N-Z)</p>
-            <p><strong className="text-foreground">Virtual nodes:</strong> Each server has multiple positions on the ring for better distribution</p>
+      <div className="flex flex-col md:flex-row gap-6 items-start mb-6">
+        <div className="flex-1 grid gap-4">
+          <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+            <h3 className="font-bold text-foreground">Data Partitioning (Sharding)</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A single server can't hold everything. We <strong>split data into partitions</strong> stored across multiple servers.
+            </p>
+            <div className="text-xs space-y-1 text-muted-foreground">
+              <p><strong className="text-foreground">Key-based:</strong> Hash the key to determine partition</p>
+              <p><strong className="text-foreground">Range-based:</strong> Split by key ranges (A-M, N-Z)</p>
+              <p><strong className="text-foreground">Virtual nodes:</strong> Each server has multiple positions on the ring for better distribution</p>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+            <h3 className="font-bold text-foreground">Data Replication</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              For high availability and reliability, data must be replicated asynchronously across multiple servers.
+            </p>
+            <div className="text-xs space-y-1 text-muted-foreground">
+              <p><strong className="text-foreground">Strategy:</strong> Map key to ring, store on the first <strong>N</strong> unique clockwise servers</p>
+              <p><strong className="text-foreground">Geo-distribution:</strong> Place replicas in <strong>distinct data centers</strong> for disaster recovery</p>
+            </div>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-5 space-y-3">
-          <h3 className="font-bold text-foreground">Data Replication</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            For high availability and reliability, data must be replicated asynchronously across multiple servers.
-          </p>
-          <div className="text-xs space-y-1 text-muted-foreground">
-            <p><strong className="text-foreground">Strategy:</strong> Map key to ring, store on the first <strong>N</strong> unique clockwise servers</p>
-            <p><strong className="text-foreground">Geo-distribution:</strong> Place replicas in <strong>distinct data centers</strong> for disaster recovery</p>
-          </div>
+        <div className="w-56 flex-shrink-0">
+          <img 
+            src={capHashRing} 
+            alt="Hash ring with servers and keys" 
+            className="w-full bg-white rounded-xl border border-border p-2"
+          />
+          <p className="text-xs text-center text-muted-foreground mt-2">Keys (k) map to servers (s) clockwise</p>
         </div>
       </div>
     </section>
@@ -201,52 +229,63 @@ const LearnContent = () => (
     <section>
       <h3 className="font-semibold text-lg mb-4">Quorum Consensus</h3>
       
-      <div className="bg-muted/50 rounded-xl p-5 space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          A <strong>coordinator</strong> sits between clients and replica nodes. It ensures enough nodes acknowledge operations.
-        </p>
-        
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div className="bg-background rounded-lg p-3">
-            <p className="text-2xl font-bold text-primary">N</p>
-            <p className="text-xs text-muted-foreground">Number of replicas</p>
-          </div>
-          <div className="bg-background rounded-lg p-3">
-            <p className="text-2xl font-bold text-green-500">W</p>
-            <p className="text-xs text-muted-foreground">Write quorum size</p>
-          </div>
-          <div className="bg-background rounded-lg p-3">
-            <p className="text-2xl font-bold text-blue-500">R</p>
-            <p className="text-xs text-muted-foreground">Read quorum size</p>
-          </div>
-        </div>
-
-        <div className="space-y-2 text-sm">
-          <p className="text-muted-foreground">
-            <strong className="text-foreground">Write succeeds</strong> when coordinator receives <strong>W</strong> ACKs
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1 bg-muted/50 rounded-xl p-5 space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            A <strong>coordinator</strong> sits between clients and replica nodes. It ensures enough nodes acknowledge operations.
           </p>
-          <p className="text-muted-foreground">
-            <strong className="text-foreground">Read succeeds</strong> when coordinator receives <strong>R</strong> responses
-          </p>
-        </div>
-
-        <div className="border-t border-border pt-4 space-y-2">
-          <p className="text-sm font-medium text-foreground">Common configurations:</p>
-          <div className="grid md:grid-cols-2 gap-3 text-xs">
+          
+          <div className="grid grid-cols-3 gap-4 text-center">
             <div className="bg-background rounded-lg p-3">
-              <p className="font-medium text-foreground mb-1">Fast writes: R=1, W=N</p>
-              <p className="text-muted-foreground">Writes go to all nodes, reads from any one</p>
+              <p className="text-2xl font-bold text-primary">N</p>
+              <p className="text-xs text-muted-foreground">Number of replicas</p>
             </div>
             <div className="bg-background rounded-lg p-3">
-              <p className="font-medium text-foreground mb-1">Fast reads: R=N, W=1</p>
-              <p className="text-muted-foreground">Writes to one node, reads check all</p>
+              <p className="text-2xl font-bold text-green-500">W</p>
+              <p className="text-xs text-muted-foreground">Write quorum size</p>
+            </div>
+            <div className="bg-background rounded-lg p-3">
+              <p className="text-2xl font-bold text-blue-500">R</p>
+              <p className="text-xs text-muted-foreground">Read quorum size</p>
             </div>
           </div>
-          <Callout type="tip" title="Strong Consistency Rule">
-            <p className="text-sm">
-              If <strong>R + W &gt; N</strong>, you guarantee strong consistency because read and write sets must overlap.
+
+          <div className="space-y-2 text-sm">
+            <p className="text-muted-foreground">
+              <strong className="text-foreground">Write succeeds</strong> when coordinator receives <strong>W</strong> ACKs
             </p>
-          </Callout>
+            <p className="text-muted-foreground">
+              <strong className="text-foreground">Read succeeds</strong> when coordinator receives <strong>R</strong> responses
+            </p>
+          </div>
+
+          <div className="border-t border-border pt-4 space-y-2">
+            <p className="text-sm font-medium text-foreground">Common configurations:</p>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="bg-background rounded-lg p-3">
+                <p className="font-medium text-foreground mb-1">Fast writes: R=1, W=N</p>
+                <p className="text-muted-foreground">Writes go to all nodes, reads from any one</p>
+              </div>
+              <div className="bg-background rounded-lg p-3">
+                <p className="font-medium text-foreground mb-1">Fast reads: R=N, W=1</p>
+                <p className="text-muted-foreground">Writes to one node, reads check all</p>
+              </div>
+            </div>
+            <Callout type="tip" title="Strong Consistency Rule">
+              <p className="text-sm">
+                If <strong>R + W &gt; N</strong>, you guarantee strong consistency because read and write sets must overlap.
+              </p>
+            </Callout>
+          </div>
+        </div>
+
+        <div className="w-64 flex-shrink-0">
+          <img 
+            src={capQuorumWrite} 
+            alt="Coordinator sending writes to replicas" 
+            className="w-full bg-white rounded-xl border border-border p-2"
+          />
+          <p className="text-xs text-center text-muted-foreground mt-2">Coordinator sends put() and waits for ACKs</p>
         </div>
       </div>
     </section>
@@ -326,7 +365,7 @@ const LearnContent = () => (
         </Callout>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-5">
+      <div className="grid md:grid-cols-2 gap-5 mb-6">
         {/* Temporary Failures */}
         <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/50 rounded-xl p-5 space-y-3">
           <h3 className="font-bold text-green-700 dark:text-green-400">Temporary Failures</h3>
@@ -350,10 +389,23 @@ const LearnContent = () => (
           <div className="bg-white/50 dark:bg-black/20 rounded-lg p-3">
             <p className="text-xs font-medium text-foreground mb-1">Merkle Trees</p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Hash data in buckets hierarchically. Compare root hashes between replicas—if different, traverse down to find exactly which buckets differ. Minimizes data transfer: O(log N) to find differences.
+              Hash data in buckets hierarchically. Compare root hashes between replicas—if different, traverse down to find exactly which buckets differ.
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Merkle Tree Diagram */}
+      <div className="bg-card border border-border rounded-xl p-5">
+        <p className="text-sm font-medium text-foreground mb-3 text-center">Merkle Tree Comparison</p>
+        <img 
+          src={capMerkleTree} 
+          alt="Merkle trees comparing data buckets between servers" 
+          className="w-full max-w-2xl mx-auto rounded-lg"
+        />
+        <p className="text-xs text-center text-muted-foreground mt-3">
+          Red nodes indicate hash differences. Traverse down to find mismatched buckets. Only sync the differing keys.
+        </p>
       </div>
     </section>
   </div>
