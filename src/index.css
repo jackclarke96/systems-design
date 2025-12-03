@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 210 25% 98%;
+    --foreground: 220 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 210 100% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 195 60% 94%;
+    --secondary-foreground: 220 20% 15%;
+
+    --muted: 210 20% 94%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 185 70% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --info: 221 83% 53%;
+
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 210 100% 45%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 210 30% 96%;
+    --sidebar-foreground: 220 20% 25%;
+    --sidebar-primary: 210 100% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 100% 45%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 20% 88%;
+    --sidebar-ring: 210 100% 45%;
+
+    --code-background: 210 25% 97%;
+    --tab-border: 210 20% 85%;
+    
+    --callout-info: 205 80% 95%;
+    --callout-info-border: 205 80% 65%;
+    --callout-info-text: 205 80% 25%;
+    
+    --callout-warning: 38 92% 95%;
+    --callout-warning-border: 38 92% 65%;
+    --callout-warning-text: 38 92% 25%;
+    
+    --callout-tip: 160 70% 94%;
+    --callout-tip-border: 160 70% 55%;
+    --callout-tip-text: 160 70% 22%;
+    
+    --callout-definition: 270 60% 95%;
+    --callout-definition-border: 270 60% 60%;
+    --callout-definition-text: 270 60% 25%;
+    
+    --callout-algorithm: 185 50% 94%;
+    --callout-algorithm-border: 185 50% 60%;
+    --callout-algorithm-text: 185 50% 20%;
+  }
+
+  .dark {
+    --background: 250 35% 12%;
+    --foreground: 210 20% 90%;
+
+    --card: 250 30% 16%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 220 25% 14%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 195 80% 55%;
+    --primary-foreground: 220 25% 10%;
+
+    --secondary: 220 20% 18%;
+    --secondary-foreground: 210 20% 90%;
+
+    --muted: 220 20% 18%;
+    --muted-foreground: 210 15% 60%;
+
+    --accent: 185 70% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --info: 221 83% 53%;
+
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
+    --ring: 195 80% 55%;
+
+    --sidebar-background: 250 35% 10%;
+    --sidebar-foreground: 210 20% 75%;
+    --sidebar-primary: 195 80% 55%;
+    --sidebar-primary-foreground: 220 25% 10%;
+    --sidebar-accent: 195 80% 55%;
+    --sidebar-accent-foreground: 220 25% 10%;
+    --sidebar-border: 220 20% 22%;
+    --sidebar-ring: 195 80% 55%;
+
+    --code-background: 250 35% 8%;
+    --tab-border: 220 20% 25%;
+    
+    --callout-info: 210 100% 15%;
+    --callout-info-border: 210 100% 35%;
+    --callout-info-text: 210 100% 85%;
+    
+    --callout-warning: 38 100% 15%;
+    --callout-warning-border: 38 100% 40%;
+    --callout-warning-text: 38 100% 85%;
+    
+    --callout-tip: 142 76% 15%;
+    --callout-tip-border: 142 76% 40%;
+    --callout-tip-text: 142 76% 85%;
+    
+    --callout-definition: 280 65% 15%;
+    --callout-definition-border: 280 65% 40%;
+    --callout-definition-text: 280 65% 85%;
+    
+    --callout-algorithm: 0 0% 15%;
+    --callout-algorithm-border: 0 0% 35%;
+    --callout-algorithm-text: 0 0% 85%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -1,0 +1,13 @@
+Focus on src/data/algorithms.ts - that's where all the algorithm content lives.
+
+Each algorithm in the algorithmCategories array has:
+
+problem - problem description
+algorithm - how it works
+solution - implementation details
+improvements - optimizations
+codeBlocks - code examples with descriptions
+detailedExplanations - interactive tooltips/modals
+images - visual aids
+Check src/types/algorithms.ts to see the full structure. You can use markdown-like syntax in the text fields (callouts with [CALLOUT:type], lists, etc.).
+
