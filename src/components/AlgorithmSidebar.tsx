@@ -10,7 +10,7 @@ interface AlgorithmSidebarProps {
 }
 
 export const AlgorithmSidebar = ({ selectedId, onSelect }: AlgorithmSidebarProps) => {
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(["graphs", "trees"]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(["patterns", "designs"]);
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategories((prev) =>

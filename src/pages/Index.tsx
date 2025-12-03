@@ -51,7 +51,7 @@ const Index = () => {
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <h1 className="text-lg font-semibold ml-2 md:ml-0">Go Algorithms</h1>
+          <h1 className="text-lg font-semibold ml-2 md:ml-0">Systems Design</h1>
         </div>
       </header>
 
@@ -84,7 +84,7 @@ const Index = () => {
                 {selectedAlgorithm.title}
               </h2>
               <p className="text-sm text-muted-foreground mb-6">
-                Problems from <em>Cracking the Coding Interview</em> by Gayle Laakmann McDowell
+                Learn scalable system architecture and design patterns
               </p>
               <ContentTabs algorithm={selectedAlgorithm} />
             </article>
