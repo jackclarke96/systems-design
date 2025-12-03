@@ -88,6 +88,50 @@ const quizQuestions: QuizQuestion[] = [
     correctIndex: 1,
     explanation: "Merkle trees hash data buckets hierarchically. If root hashes differ, you traverse down to find exactly which buckets differ, minimizing the data needed to compare and synchronize.",
   },
+  {
+    question: "What is 'eventual consistency'?",
+    options: [
+      "Data is always immediately consistent",
+      "Given enough time without updates, all replicas will eventually have the same data",
+      "Consistency is never achieved",
+      "Only the primary node has correct data",
+    ],
+    correctIndex: 1,
+    explanation: "Eventual consistency means replicas may temporarily disagree, but will converge to the same state eventually if no new updates occur.",
+  },
+  {
+    question: "What does a coordinator do in Two-Phase Commit (2PC)?",
+    options: [
+      "Stores all the data",
+      "Orchestrates prepare and commit phases across participants",
+      "Handles all read requests",
+      "Encrypts network traffic",
+    ],
+    correctIndex: 1,
+    explanation: "The coordinator asks all participants to prepare, waits for votes, then tells everyone to commit (if all agreed) or abort (if any declined).",
+  },
+  {
+    question: "What is the CAP theorem's practical implication?",
+    options: [
+      "You can have all three: Consistency, Availability, and Partition tolerance",
+      "During network partitions, you must choose between consistency and availability",
+      "Partition tolerance is optional",
+      "Consistency is always more important than availability",
+    ],
+    correctIndex: 1,
+    explanation: "Since partitions are inevitable, you must choose: reject requests to stay consistent (CP) or accept requests with possibly stale data (AP).",
+  },
+  {
+    question: "What is 'read repair' in distributed databases?",
+    options: [
+      "Fixing corrupt data on disk",
+      "Detecting and fixing inconsistencies during read operations",
+      "Repairing network connections",
+      "Optimizing read queries",
+    ],
+    correctIndex: 1,
+    explanation: "Read repair detects stale replicas during reads and updates them with the latest data, gradually healing inconsistencies.",
+  },
 ];
 
 export const CAPContent = () => {

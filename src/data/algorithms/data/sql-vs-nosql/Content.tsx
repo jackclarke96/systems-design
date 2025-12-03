@@ -80,6 +80,50 @@ const quizQuestions: QuizQuestion[] = [
     correctIndex: 1,
     explanation: "Starting with SQL is generally safer—it provides ACID guarantees and mature tooling. Only move to NoSQL when you have clear evidence of scaling or flexibility limitations.",
   },
+  {
+    question: "What is 'sharding' in databases?",
+    options: [
+      "Replicating data across servers",
+      "Partitioning data across multiple servers based on a key",
+      "Compressing data for storage",
+      "Encrypting sensitive data",
+    ],
+    correctIndex: 1,
+    explanation: "Sharding splits data across servers based on a shard key. Each shard holds a subset of data, enabling horizontal scaling.",
+  },
+  {
+    question: "When would you use a wide-column store like Cassandra?",
+    options: [
+      "For complex multi-table joins",
+      "For high write throughput with simple query patterns",
+      "For ACID transactions across tables",
+      "For storing small amounts of data",
+    ],
+    correctIndex: 1,
+    explanation: "Wide-column stores excel at high write throughput and time-series data with predictable query patterns, not complex relational queries.",
+  },
+  {
+    question: "What is 'denormalization' and why use it in NoSQL?",
+    options: [
+      "Removing all duplicate data",
+      "Duplicating data to avoid joins and improve read performance",
+      "Encrypting data",
+      "Compressing data",
+    ],
+    correctIndex: 1,
+    explanation: "Denormalization stores redundant data to serve reads without joins. NoSQL databases often require this since they lack efficient join operations.",
+  },
+  {
+    question: "What does 'polyglot persistence' mean?",
+    options: [
+      "Using only one database type",
+      "Using multiple database technologies, each suited to specific needs",
+      "Translating queries between databases",
+      "Migrating between database vendors",
+    ],
+    correctIndex: 1,
+    explanation: "Polyglot persistence uses the right database for each use case: SQL for transactions, document DB for flexible schema, graph DB for relationships, etc.",
+  },
 ];
 
 export const SQLvsNoSQLContent = () => {

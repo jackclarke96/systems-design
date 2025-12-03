@@ -388,6 +388,50 @@ export const MessagingQuiz = () => {
       ],
       correctIndex: 1,
       explanation: "The outbox worker polls the outbox table and reliably publishes messages to the message broker."
+    },
+    {
+      question: "What is 'at-most-once' delivery?",
+      options: [
+        "Each message is delivered at least once",
+        "Each message is delivered exactly once",
+        "Messages may be lost but never duplicated",
+        "Messages are always delivered in order"
+      ],
+      correctIndex: 2,
+      explanation: "At-most-once means fire-and-forget. Fast but messages can be lost. Used when occasional loss is acceptable."
+    },
+    {
+      question: "Why is exactly-once delivery so hard to achieve natively?",
+      options: [
+        "Networks are too slow",
+        "Network failures and partial failures make it impossible to guarantee both delivery and non-duplication",
+        "Databases don't support it",
+        "It requires too much memory"
+      ],
+      correctIndex: 1,
+      explanation: "Network partitions mean you can't distinguish 'message lost' from 'ack lost'. You must choose between possible loss or possible duplicates."
+    },
+    {
+      question: "What is a consumer group in Kafka?",
+      options: [
+        "A group of producers",
+        "Multiple consumers that share work on a topic, with each partition assigned to one consumer",
+        "A security feature",
+        "A type of message format"
+      ],
+      correctIndex: 1,
+      explanation: "Consumer groups enable horizontal scaling. Partitions are distributed among group members, and each message goes to one consumer in the group."
+    },
+    {
+      question: "What should you do if you receive a message with seq_no higher than expected (gap detected)?",
+      options: [
+        "Process it anyway",
+        "Delete it",
+        "Pause and request replay of missing messages",
+        "Ignore sequence numbers"
+      ],
+      correctIndex: 2,
+      explanation: "A gap indicates missing messages. Pause processing and replay from the last known good sequence to maintain ordering guarantees."
     }
   ];
 

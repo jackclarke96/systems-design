@@ -352,6 +352,61 @@ export const RetriesDlqQuiz = () => {
       ],
       correctIndex: 1,
       explanation: "DLQ alerts ensure operators are notified when messages fail and need investigation."
+    },
+    {
+      question: "What is the 'thundering herd' problem?",
+      options: [
+        "Too many servers in a cluster",
+        "All clients retrying simultaneously after a failure, overwhelming the recovering service",
+        "A type of database lock",
+        "Network congestion"
+      ],
+      correctIndex: 1,
+      explanation: "When a service recovers, all waiting clients may retry at once. Jitter prevents this by spreading retries over time."
+    },
+    {
+      question: "What should you do with a message in the DLQ?",
+      options: [
+        "Delete it immediately",
+        "Automatically retry it forever",
+        "Investigate, fix the issue, and either replay or discard",
+        "Send it to another service"
+      ],
+      correctIndex: 2,
+      explanation: "DLQ messages need investigation. Fix the underlying issue (bug, bad data), then replay the message or mark it as handled."
+    },
+    {
+      question: "What is a typical max retry count for transient failures?",
+      options: [
+        "1 retry",
+        "3-5 retries",
+        "100 retries",
+        "Unlimited retries"
+      ],
+      correctIndex: 1,
+      explanation: "3-5 retries with exponential backoff is typical. Too few misses recoverable failures; too many wastes resources on permanent failures."
+    },
+    {
+      question: "How can you implement idempotency for a payment processing system?",
+      options: [
+        "Process every request regardless of duplicates",
+        "Use an idempotency key to check if the operation was already performed",
+        "Disable retries entirely",
+        "Use faster servers"
+      ],
+      correctIndex: 1,
+      explanation: "Store the idempotency key with the result. On retry, check if the key exists and return the stored result instead of reprocessing."
+    },
+    {
+      question: "What is 'circuit breaking' in the context of retries?",
+      options: [
+        "Stopping retries entirely",
+        "Stopping retries when failure rate is too high to prevent overwhelming a struggling service",
+        "A type of network error",
+        "Encrypting retry attempts"
+      ],
+      correctIndex: 1,
+      explanation: "Circuit breakers complement retries by failing fast when a service is clearly down, preventing retry storms from making things worse."
     }
   ];
 
