@@ -10,6 +10,7 @@ import { circuitBreakerPattern } from "./algorithms/patterns/circuit-breaker";
 import { rateLimitingPattern } from "./algorithms/patterns/rate-limiting";
 import { retriesDlqPattern } from "./algorithms/patterns/retries-dlq";
 import { messagingDeliveryPattern } from "./algorithms/patterns/messaging-delivery";
+import { deploymentPatternsPattern } from "./algorithms/patterns/deployment-patterns";
 import { acidTopic } from "./algorithms/data/acid";
 import { capTopic } from "./algorithms/data/cap";
 import { sqlVsNosqlTopic } from "./algorithms/data/sql-vs-nosql";
@@ -28,6 +29,7 @@ const patternsTopics = [
   rateLimitingPattern,
   retriesDlqPattern,
   messagingDeliveryPattern,
+  deploymentPatternsPattern,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components",
