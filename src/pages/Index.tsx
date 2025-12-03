@@ -41,8 +41,8 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen w-full bg-background">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center px-4">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="flex h-14 items-center px-4 md:px-6">
           <Button
             variant="ghost"
             size="icon"
@@ -51,12 +51,17 @@ const Index = () => {
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <h1 className="text-lg font-semibold ml-2 md:ml-0">Systems Design</h1>
+          <div className="flex items-center gap-2 ml-2 md:ml-0">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">SD</span>
+            </div>
+            <h1 className="text-lg font-bold">Systems Design</h1>
+          </div>
         </div>
       </header>
 
       <div className="flex flex-1 w-full">
-        {/* Sidebar - hidden on mobile by default, shown when menu is open */}
+        {/* Sidebar */}
         <div className={`
           fixed md:relative inset-y-0 left-0 z-40 
           transform transition-transform duration-300 ease-in-out
@@ -77,15 +82,18 @@ const Index = () => {
           />
         )}
         
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full min-w-0">
+        <main className="flex-1 p-6 md:p-10 overflow-y-auto w-full min-w-0">
           {selectedAlgorithm && (
-            <article className="max-w-full">
-              <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground break-words">
-                {selectedAlgorithm.title}
-              </h2>
-              <p className="text-sm text-muted-foreground mb-6">
-                Learn scalable system architecture and design patterns
-              </p>
+            <article className="max-w-4xl mx-auto">
+              <header className="mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">
+                  {selectedAlgorithm.title}
+                </h2>
+                <p className="text-muted-foreground">
+                  Learn scalable system architecture and design patterns
+                </p>
+              </header>
+              
               {selectedAlgorithm.singlePage ? (
                 <div className="prose prose-sm md:prose-base max-w-none">
                   {selectedAlgorithm.problem}
