@@ -14,6 +14,7 @@ export interface Algorithm {
   algorithm: ReactNode;
   solution: ReactNode;
   improvements: ReactNode;
+  singlePage?: boolean; // If true, shows only problem content without tabs
   codeBlocks?: CodeBlock[];
   images?: {
     url: string;
