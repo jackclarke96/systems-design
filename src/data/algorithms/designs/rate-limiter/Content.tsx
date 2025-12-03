@@ -1,6 +1,7 @@
 import { Section, Paragraph } from "@/components/AlgorithmContent";
 import { Quiz } from "@/components/Quiz";
 import { Shield, Server, Gauge, Clock, Database, AlertTriangle, CheckCircle, HelpCircle, Zap } from "lucide-react";
+import rateLimiterArchitecture from "@/assets/rate-limiter-architecture.png";
 
 const ConceptCard = ({ 
   title, 
@@ -214,6 +215,15 @@ export const Content = () => {
             <>Redis INCR and EXPIRE work perfectly for counters</>
           ]} />
         </ConceptCard>
+      </div>
+
+      <div className="rounded-lg border border-border bg-card p-4">
+        <h4 className="font-semibold mb-3 text-center">Architecture Overview</h4>
+        <img 
+          src={rateLimiterArchitecture} 
+          alt="Rate Limiter Architecture - showing client, middleware, API servers, cache, workers, Redis, and message queue" 
+          className="w-full rounded-lg border border-border bg-white"
+        />
       </div>
 
       <SectionHeader>Distributed Challenges</SectionHeader>
