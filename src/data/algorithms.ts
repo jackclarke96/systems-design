@@ -21,6 +21,7 @@ import { reconciliationTopic } from "./algorithms/data/reconciliation";
 import { rateLimiterDesign } from "./algorithms/designs/rate-limiter";
 import { walletLedgerDesign } from "./algorithms/designs/wallet-ledger";
 import { pspIntegration } from "./algorithms/designs/psp-integration";
+import { financialTransactions } from "./algorithms/designs/financial-transactions";
 import { osiModelTopic } from "./algorithms/backend/osi-model";
 import { ipTransportTopic } from "./algorithms/backend/ip-transport";
 import { tlsHttpTopic } from "./algorithms/backend/tls-http";
