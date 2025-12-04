@@ -54,6 +54,7 @@ const designsTopics = [
   rateLimiterDesign,
   walletLedgerDesign,
   pspIntegration,
+  financialTransactions,
   {
     ...alg4pt2,
     id: "url-shortener",
