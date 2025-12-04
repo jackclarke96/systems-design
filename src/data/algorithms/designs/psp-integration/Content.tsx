@@ -106,7 +106,7 @@ const PropertyCard = ({ title, children, how }: { title: string; children: React
   </div>
 );
 
-type FlowTab = "architecture" | "make-payment" | "webhooks" | "reconciliation" | "properties" | "concepts";
+type FlowTab = "architecture" | "make-payment" | "get-status" | "reconciliation" | "properties" | "concepts";
 
 export const Content = () => {
   const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
@@ -115,7 +115,7 @@ export const Content = () => {
   const flowTabs: { id: FlowTab; label: string }[] = [
     { id: "architecture", label: "Architecture" },
     { id: "make-payment", label: "Make Payment" },
-    { id: "webhooks", label: "Webhooks" },
+    { id: "get-status", label: "Get Status" },
     { id: "reconciliation", label: "Reconciliation" },
     { id: "properties", label: "Properties" },
     { id: "concepts", label: "Concepts" },
@@ -299,30 +299,14 @@ export const Content = () => {
                 </FlowStep>
               </div>
 
-              <SectionHeader>Flow 2: Get Payment Status</SectionHeader>
-              <div className="rounded-lg border border-border bg-card p-4">
-                <BulletList items={[
-                  <>Client calls <code className="bg-muted px-1 rounded text-xs">GET /payments/{"{id}"}</code></>,
-                  "API Gateway → Payment Service",
-                  "Payment Service reads from payments table: state, amounts, PSP refs, timestamps",
-                  "Returns current status + maybe 'settled_at'",
-                  <><strong>Note:</strong> For payment status we read from Payment DB; ledger is for financial facts</>
-                ]} />
-              </div>
-            </div>
-          )}
-
-          {/* Webhooks Flow Tab */}
-          {activeFlow === "webhooks" && (
-            <div className="space-y-6">
-              <SectionHeader>PSP → Payment Service (Webhooks)</SectionHeader>
+              <SectionHeader>Flow 2: PSP Webhooks</SectionHeader>
 
               <div className="space-y-6">
-                <FlowStep number={1} title="User completes 3DS">
+                <FlowStep number={5} title="User completes 3DS">
                   <p>User completes 3DS on PSP page; PSP processes auth + capture.</p>
                 </FlowStep>
 
-                <FlowStep number={2} title="PSP sends AUTHORIZED webhook">
+                <FlowStep number={6} title="PSP sends AUTHORIZED webhook">
                   <div className="bg-muted/50 rounded p-3 text-xs space-y-2">
                     <p className="font-semibold">Webhook handler:</p>
                     <ol className="list-decimal list-inside space-y-1">
@@ -335,7 +319,7 @@ export const Content = () => {
                   </div>
                 </FlowStep>
 
-                <FlowStep number={3} title="PSP sends CAPTURED/SETTLED webhook">
+                <FlowStep number={7} title="PSP sends CAPTURED/SETTLED webhook">
                   <div className="bg-muted/50 rounded p-3 text-xs space-y-2">
                     <p className="font-semibold">Webhook handler:</p>
                     <ol className="list-decimal list-inside space-y-1">
@@ -352,10 +336,10 @@ export const Content = () => {
                 </FlowStep>
               </div>
 
-              <SectionHeader>Outbox → Broker → Ledger</SectionHeader>
+              <SectionHeader>Flow 3: Outbox → Broker → Ledger</SectionHeader>
 
               <div className="space-y-6">
-                <FlowStep number={1} title="Outbox worker polls">
+                <FlowStep number={8} title="Outbox worker polls">
                   <BulletList items={[
                     "Polls outbox_events WHERE status = PENDING",
                     "Publishes PaymentSettled to Broker",
@@ -363,7 +347,7 @@ export const Content = () => {
                   ]} />
                 </FlowStep>
 
-                <FlowStep number={2} title="Ledger Service consumes">
+                <FlowStep number={9} title="Ledger Service consumes">
                   <div className="bg-muted/50 rounded p-3 text-xs space-y-2">
                     <p className="font-semibold">Consumer logic (in DB transaction):</p>
                     <ol className="list-decimal list-inside space-y-1">
@@ -376,6 +360,30 @@ export const Content = () => {
                     </ol>
                   </div>
                 </FlowStep>
+              </div>
+            </div>
+          )}
+
+          {/* Get Status Tab */}
+          {activeFlow === "get-status" && (
+            <div className="space-y-6">
+              <SectionHeader>Get Payment Status</SectionHeader>
+              <div className="rounded-lg border border-border bg-card p-4">
+                <BulletList items={[
+                  <>Client calls <code className="bg-muted px-1 rounded text-xs">GET /payments/{"{id}"}</code></>,
+                  "API Gateway → Payment Service",
+                  "Payment Service reads from payments table: state, amounts, PSP refs, timestamps",
+                  "Returns current status + maybe 'settled_at'",
+                  <><strong>Note:</strong> For payment status we read from Payment DB; ledger is for financial facts</>
+                ]} />
+              </div>
+
+              <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-4">
+                <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">Why not hit the Ledger?</h4>
+                <p className="text-sm text-muted-foreground">
+                  Payment status (INITIATED, AUTHORIZED, SETTLED) lives with the payment aggregate in Payment DB. 
+                  Ledger is for financial facts (balances, money movement). They serve different purposes.
+                </p>
               </div>
             </div>
           )}
