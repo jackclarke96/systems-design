@@ -5,11 +5,14 @@ import { ContentTabs } from "@/components/ContentTabs";
 import { algorithmCategories } from "@/data/algorithms";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Quiz } from "@/components/Quiz";
 
 const Index = () => {
   const { category, algorithmId } = useParams();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("learn");
 
   const defaultAlgorithm = algorithmCategories[0]?.algorithms[0]?.id || "";
   const selectedAlgorithmId = algorithmId || defaultAlgorithm;
@@ -17,6 +20,11 @@ const Index = () => {
   const selectedAlgorithm = algorithmCategories
     .flatMap((cat) => cat.algorithms)
     .find((alg) => alg.id === selectedAlgorithmId);
+
+  // Reset tab when algorithm changes
+  useEffect(() => {
+    setActiveTab("learn");
+  }, [selectedAlgorithmId]);
 
   useEffect(() => {
     if (!category && !algorithmId) {
@@ -95,9 +103,34 @@ const Index = () => {
               </header>
               
               {selectedAlgorithm.singlePage ? (
-                <div className="prose prose-sm md:prose-base max-w-none">
-                  {selectedAlgorithm.problem}
-                </div>
+                selectedAlgorithm.quizQuestions && selectedAlgorithm.quizQuestions.length > 0 ? (
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="border-b border-tab-border rounded-none bg-transparent p-0 h-auto w-full justify-start">
+                      <TabsTrigger 
+                        value="learn"
+                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-2 text-sm"
+                      >
+                        Learn
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="quiz"
+                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-2 text-sm"
+                      >
+                        Quiz
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="learn" className="mt-6 prose prose-sm md:prose-base max-w-none">
+                      {selectedAlgorithm.problem}
+                    </TabsContent>
+                    <TabsContent value="quiz" className="mt-6">
+                      <Quiz questions={selectedAlgorithm.quizQuestions} />
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  <div className="prose prose-sm md:prose-base max-w-none">
+                    {selectedAlgorithm.problem}
+                  </div>
+                )
               ) : (
                 <ContentTabs algorithm={selectedAlgorithm} />
               )}

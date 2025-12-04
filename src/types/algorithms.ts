@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { QuizQuestion } from "@/components/Quiz";
 
 export interface CodeBlock {
   code: string;
@@ -15,6 +16,7 @@ export interface Algorithm {
   solution: ReactNode;
   improvements: ReactNode;
   singlePage?: boolean; // If true, shows only problem content without tabs
+  quizQuestions?: QuizQuestion[]; // Quiz questions for single page content
   codeBlocks?: CodeBlock[];
   images?: {
     url: string;

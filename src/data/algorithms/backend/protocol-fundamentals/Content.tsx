@@ -1,8 +1,8 @@
 import { Section, Paragraph, Heading } from "@/components/AlgorithmContent";
 import { Callout } from "@/components/Callout";
-import { Quiz, QuizQuestion } from "@/components/Quiz";
+import { QuizQuestion } from "@/components/Quiz";
 
-const quizQuestions: QuizQuestion[] = [
+export const quizQuestions: QuizQuestion[] = [
   {
     question: "Which OSI layer is responsible for IP addressing and routing?",
     options: ["Layer 2 - Data Link", "Layer 3 - Network", "Layer 4 - Transport", "Layer 5 - Session"],
@@ -413,6 +413,137 @@ export const Content = () => (
       </Callout>
     </Section>
 
+    {/* HTTPS Latency Comparison */}
+    <Section title="HTTPS Latency Comparison">
+      <Paragraph>
+        Different combinations of TCP/QUIC and TLS versions affect connection latency. Each round trip (RTT) adds delay before data can be sent.
+      </Paragraph>
+
+      <Callout type="info" title="Common Steps in All HTTPS Connections">
+        <ol className="list-decimal list-inside space-y-1">
+          <li>Establish Connection</li>
+          <li>Establish Encryption</li>
+          <li>Send Data</li>
+          <li>Close Connection</li>
+        </ol>
+      </Callout>
+
+      <div className="space-y-4">
+        {/* TLS 1.2 */}
+        <div className="p-4 rounded-lg border border-border bg-card">
+          <h4 className="font-semibold text-foreground mb-3">HTTPS over TCP + TLS 1.2</h4>
+          <div className="flex items-center gap-2 flex-wrap text-sm font-mono mb-2">
+            <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded">TCP Handshake</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-purple-500/20 text-purple-400 px-2 py-1 rounded">TLS Handshake (2 RTT)</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded">Request</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong>3 RTT minimum:</strong> SYN/SYN-ACK/ACK, then Client Hello/Server Hello, then Client Finish/Server Finish, then request.
+          </p>
+        </div>
+
+        {/* TLS 1.3 */}
+        <div className="p-4 rounded-lg border border-border bg-card">
+          <h4 className="font-semibold text-foreground mb-3">HTTPS over TCP + TLS 1.3</h4>
+          <div className="flex items-center gap-2 flex-wrap text-sm font-mono mb-2">
+            <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded">TCP Handshake</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-purple-500/20 text-purple-400 px-2 py-1 rounded">TLS 1.3 (1 RTT)</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded">Request</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong>2 RTT minimum:</strong> TLS 1.3 combines key exchange into one round trip. Server sends certificate and key material together.
+          </p>
+        </div>
+
+        {/* QUIC / HTTP/3 */}
+        <div className="p-4 rounded-lg border border-border bg-card">
+          <h4 className="font-semibold text-foreground mb-3">HTTPS over QUIC (HTTP/3)</h4>
+          <div className="flex items-center gap-2 flex-wrap text-sm font-mono mb-2">
+            <span className="bg-amber-500/20 text-amber-400 px-2 py-1 rounded">QUIC + TLS Combined (1 RTT)</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded">Request</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong>1 RTT minimum:</strong> QUIC merges connection and TLS handshake into single round trip. TCP and TLS were designed separately; QUIC combines them.
+          </p>
+        </div>
+
+        {/* TLS 1.3 0-RTT */}
+        <div className="p-4 rounded-lg border border-border bg-card">
+          <h4 className="font-semibold text-foreground mb-3">HTTPS over TCP + TLS 1.3 with 0-RTT</h4>
+          <div className="flex items-center gap-2 flex-wrap text-sm font-mono mb-2">
+            <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded">TCP Handshake</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded">Request + TLS Resume</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong>1 RTT for data:</strong> If client/server connected before, a pre-shared key can be used. Client sends GET + Client Hello together using cached key hint.
+          </p>
+        </div>
+
+        {/* QUIC 0-RTT */}
+        <div className="p-4 rounded-lg border border-green-500/30 bg-green-500/10">
+          <h4 className="font-semibold text-green-400 mb-3">HTTPS over QUIC with 0-RTT (Fastest)</h4>
+          <div className="flex items-center gap-2 flex-wrap text-sm font-mono mb-2">
+            <span className="bg-green-500/30 text-green-400 px-2 py-1 rounded">Request + Pre-shared Key</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="bg-green-500/30 text-green-400 px-2 py-1 rounded">Response</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong>0 RTT before data:</strong> For repeat connections, send pre-shared key and GET request together. Server approves, decrypts, and responds immediately.
+          </p>
+        </div>
+      </div>
+
+      <Callout type="warning" title="0-RTT Security Consideration">
+        0-RTT data can be replayed by attackers. Only safe for idempotent requests (GET). Don't use for POST/PUT operations that modify state.
+      </Callout>
+
+      {/* Summary Table */}
+      <div className="overflow-x-auto mt-4">
+        <table className="w-full text-sm border border-border rounded-lg">
+          <thead className="bg-muted">
+            <tr>
+              <th className="p-3 text-left border-b border-border">Protocol Stack</th>
+              <th className="p-3 text-left border-b border-border">RTT Before Data</th>
+              <th className="p-3 text-left border-b border-border">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-border">
+              <td className="p-3">TCP + TLS 1.2</td>
+              <td className="p-3 font-mono">3 RTT</td>
+              <td className="p-3 text-muted-foreground">Separate TCP and TLS handshakes</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">TCP + TLS 1.3</td>
+              <td className="p-3 font-mono">2 RTT</td>
+              <td className="p-3 text-muted-foreground">Combined key exchange</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">QUIC (HTTP/3)</td>
+              <td className="p-3 font-mono">1 RTT</td>
+              <td className="p-3 text-muted-foreground">Merged connection + TLS</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">TCP + TLS 1.3 0-RTT</td>
+              <td className="p-3 font-mono">1 RTT*</td>
+              <td className="p-3 text-muted-foreground">Repeat connections only</td>
+            </tr>
+            <tr>
+              <td className="p-3">QUIC 0-RTT</td>
+              <td className="p-3 font-mono text-green-400">0 RTT*</td>
+              <td className="p-3 text-muted-foreground">Fastest for repeat connections</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </Section>
+
     {/* HTTP */}
     <Section title="HTTP Evolution">
       <Heading>HTTP Request/Response Structure</Heading>
@@ -568,11 +699,6 @@ export const Content = () => (
           </ul>
         </div>
       </div>
-    </Section>
-
-    {/* Quiz */}
-    <Section title="Quiz">
-      <Quiz questions={quizQuestions} />
     </Section>
   </div>
 );
