@@ -6,8 +6,8 @@ import {
   CheckCircle, AlertTriangle, Zap, FileText, Link, Clock
 } from "lucide-react";
 import financialTransactionsArchitecture from "@/assets/financial-transactions-architecture.png";
-import paymentServiceSchema from "@/assets/payment-service-schema.png";
-import ledgerServiceSchema from "@/assets/ledger-service-schema.png";
+import transactionServiceSchema from "@/assets/transaction-service-schema.png";
+import transactionLedgerSchema from "@/assets/transaction-ledger-schema.png";
 
 const ConceptCard = ({ 
   title, 
@@ -258,7 +258,7 @@ export const Content = () => {
                   <h4 className="font-semibold text-center">Transaction Service DB</h4>
                   <div className="rounded-lg border border-border bg-card p-4">
                     <img 
-                      src={paymentServiceSchema} 
+                      src={transactionServiceSchema}
                       alt="Transaction Service Schema" 
                       className="w-full rounded-lg border border-border bg-white"
                     />
@@ -272,7 +272,7 @@ export const Content = () => {
                         <li>• amount_cents (bigint)</li>
                         <li>• currency (char 3)</li>
                         <li>• state (varchar) — RECEIVED, VALIDATED, POSTED...</li>
-                        <li>• external_transaction_id (varchar) — external ref</li>
+                        <li>• external_tx_id (varchar) — external ref</li>
                       </ul>
                     </div>
                     <div className="rounded-lg border border-border bg-muted/30 p-3">
@@ -297,7 +297,7 @@ export const Content = () => {
                       <ul className="space-y-1 text-muted-foreground font-mono text-xs">
                         <li>• id (uuid) PK</li>
                         <li>• external_event_id (varchar) UNIQUE — dedup key</li>
-                        <li>• external_transaction_id (varchar) FK</li>
+                        <li>• external_tx_id (varchar) FK</li>
                         <li>• event_type (varchar) — CONFIRMED, SETTLED...</li>
                       </ul>
                     </div>
@@ -308,7 +308,7 @@ export const Content = () => {
                   <h4 className="font-semibold text-center">Ledger Service DB</h4>
                   <div className="rounded-lg border border-border bg-card p-4">
                     <img 
-                      src={ledgerServiceSchema} 
+                      src={transactionLedgerSchema}
                       alt="Ledger Service Schema" 
                       className="w-full rounded-lg border border-border bg-white"
                     />
