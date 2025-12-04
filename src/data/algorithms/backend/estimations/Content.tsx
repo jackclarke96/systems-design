@@ -32,6 +32,18 @@ export const quizQuestions: QuizQuestion[] = [
     options: ["1 ms", "10 ms", "100 ms", "1 second"],
     correctIndex: 2,
     explanation: "Cross-continent round trips are approximately 100ms due to the physical distance and speed of light limits."
+  },
+  {
+    question: "How much storage would 1 million SQL rows typically require?",
+    options: ["1-5 MB", "10-50 MB", "100-500 MB", "1-5 GB"],
+    correctIndex: 2,
+    explanation: "With typical rows of 100-500 bytes, 1M rows = 100-500 MB. This easily fits in memory for most servers."
+  },
+  {
+    question: "What is the approximate size of a typical REST API paginated response?",
+    options: ["100 bytes - 1 KB", "10-100 KB", "1-10 MB", "100+ MB"],
+    correctIndex: 1,
+    explanation: "A paginated API response with 20-50 items typically ranges from 10-100 KB depending on the data structure."
   }
 ];
 
@@ -90,6 +102,202 @@ export const Content = () => (
 
       <Callout type="tip" title="Memory Trick">
         Every 10 powers of 2 ≈ 3 decimal digits (×1000). So 2^10 ≈ 10^3, 2^20 ≈ 10^6, etc.
+      </Callout>
+    </Section>
+
+    {/* Common Data Sizes */}
+    <Section title="Common Data Sizes">
+      <Paragraph>
+        Useful estimates for back-of-envelope calculations. These are approximations - actual sizes vary.
+      </Paragraph>
+
+      <Heading>Text & Documents</Heading>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border border-border rounded-lg">
+          <thead className="bg-muted">
+            <tr>
+              <th className="p-3 text-left border-b border-border">Item</th>
+              <th className="p-3 text-left border-b border-border">Size</th>
+              <th className="p-3 text-left border-b border-border">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-border">
+              <td className="p-3">1 ASCII character</td>
+              <td className="p-3 font-mono">1 byte</td>
+              <td className="p-3 text-muted-foreground">UTF-8 can be 1-4 bytes</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">UUID</td>
+              <td className="p-3 font-mono">36 bytes</td>
+              <td className="p-3 text-muted-foreground">As string with hyphens</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">Tweet (280 chars)</td>
+              <td className="p-3 font-mono">~300 bytes</td>
+              <td className="p-3 text-muted-foreground">With some overhead</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">Typical webpage HTML</td>
+              <td className="p-3 font-mono">50-100 KB</td>
+              <td className="p-3 text-muted-foreground">Without assets</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">PDF page</td>
+              <td className="p-3 font-mono">~100 KB</td>
+              <td className="p-3 text-muted-foreground">Text-heavy; images much more</td>
+            </tr>
+            <tr>
+              <td className="p-3">Average email</td>
+              <td className="p-3 font-mono">~50 KB</td>
+              <td className="p-3 text-muted-foreground">Without attachments</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Heading>Database & Structured Data</Heading>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border border-border rounded-lg">
+          <thead className="bg-muted">
+            <tr>
+              <th className="p-3 text-left border-b border-border">Item</th>
+              <th className="p-3 text-left border-b border-border">Size</th>
+              <th className="p-3 text-left border-b border-border">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-border">
+              <td className="p-3">Typical SQL row</td>
+              <td className="p-3 font-mono">100-500 bytes</td>
+              <td className="p-3 text-muted-foreground">Depends on columns</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">CSV row (10 fields)</td>
+              <td className="p-3 font-mono">~200 bytes</td>
+              <td className="p-3 text-muted-foreground">Average field ~20 chars</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">JSON object (small)</td>
+              <td className="p-3 font-mono">200-500 bytes</td>
+              <td className="p-3 text-muted-foreground">User profile, config</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">Protobuf message</td>
+              <td className="p-3 font-mono">~50% of JSON</td>
+              <td className="p-3 text-muted-foreground">Binary, no field names</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">1M SQL rows</td>
+              <td className="p-3 font-mono">100-500 MB</td>
+              <td className="p-3 text-muted-foreground">Fits in memory</td>
+            </tr>
+            <tr>
+              <td className="p-3">1B SQL rows</td>
+              <td className="p-3 font-mono">100-500 GB</td>
+              <td className="p-3 text-muted-foreground">Needs sharding/partitioning</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Heading>Media Files</Heading>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border border-border rounded-lg">
+          <thead className="bg-muted">
+            <tr>
+              <th className="p-3 text-left border-b border-border">Item</th>
+              <th className="p-3 text-left border-b border-border">Size</th>
+              <th className="p-3 text-left border-b border-border">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-border">
+              <td className="p-3">Thumbnail image</td>
+              <td className="p-3 font-mono">5-20 KB</td>
+              <td className="p-3 text-muted-foreground">100x100 JPEG</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">Web image (compressed)</td>
+              <td className="p-3 font-mono">100-500 KB</td>
+              <td className="p-3 text-muted-foreground">JPEG/WebP, 1080p</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">High-res photo</td>
+              <td className="p-3 font-mono">2-5 MB</td>
+              <td className="p-3 text-muted-foreground">4K JPEG</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">RAW photo</td>
+              <td className="p-3 font-mono">20-50 MB</td>
+              <td className="p-3 text-muted-foreground">Uncompressed</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">MP3 song (4 min)</td>
+              <td className="p-3 font-mono">4-8 MB</td>
+              <td className="p-3 text-muted-foreground">128-256 kbps</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">HD video (1 min)</td>
+              <td className="p-3 font-mono">100-150 MB</td>
+              <td className="p-3 text-muted-foreground">1080p H.264</td>
+            </tr>
+            <tr>
+              <td className="p-3">4K video (1 min)</td>
+              <td className="p-3 font-mono">300-500 MB</td>
+              <td className="p-3 text-muted-foreground">H.265/HEVC</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Heading>Network & API</Heading>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border border-border rounded-lg">
+          <thead className="bg-muted">
+            <tr>
+              <th className="p-3 text-left border-b border-border">Item</th>
+              <th className="p-3 text-left border-b border-border">Size</th>
+              <th className="p-3 text-left border-b border-border">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-border">
+              <td className="p-3">HTTP headers</td>
+              <td className="p-3 font-mono">200-800 bytes</td>
+              <td className="p-3 text-muted-foreground">Cookies can add KB</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">TLS handshake</td>
+              <td className="p-3 font-mono">5-10 KB</td>
+              <td className="p-3 text-muted-foreground">Certificates included</td>
+            </tr>
+            <tr className="border-b border-border">
+              <td className="p-3">REST API response (list)</td>
+              <td className="p-3 font-mono">10-100 KB</td>
+              <td className="p-3 text-muted-foreground">Paginated, 20-50 items</td>
+            </tr>
+            <tr className="border-b border-border bg-muted/50">
+              <td className="p-3">GraphQL response</td>
+              <td className="p-3 font-mono">1-50 KB</td>
+              <td className="p-3 text-muted-foreground">Only requested fields</td>
+            </tr>
+            <tr>
+              <td className="p-3">WebSocket frame overhead</td>
+              <td className="p-3 font-mono">2-14 bytes</td>
+              <td className="p-3 text-muted-foreground">Per message</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Callout type="tip" title="Quick Calculations">
+        <ul className="list-disc list-inside space-y-1">
+          <li><strong>1M users × 1KB profile = 1GB</strong></li>
+          <li><strong>1M daily messages × 300B = 300MB/day</strong></li>
+          <li><strong>1000 RPS × 10KB response = 10MB/s = 80Mbps</strong></li>
+          <li><strong>1B rows × 200B = 200GB</strong> (needs partitioning)</li>
+        </ul>
       </Callout>
     </Section>
 
