@@ -1,9 +1,9 @@
 import { Algorithm } from "@/types/algorithms";
 import { Content, quizQuestions } from "./Content";
 
-export const protocolFundamentals: Algorithm = {
-  id: "protocol-fundamentals",
-  title: "Protocol Fundamentals",
+export const executionPatternsTopic: Algorithm = {
+  id: "execution-patterns",
+  title: "Execution Patterns",
   category: "backend",
   singlePage: true,
   quizQuestions: quizQuestions,
