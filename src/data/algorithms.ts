@@ -20,7 +20,13 @@ import { paymentLifecycleTopic } from "./algorithms/data/payment-lifecycle";
 import { reconciliationTopic } from "./algorithms/data/reconciliation";
 import { rateLimiterDesign } from "./algorithms/designs/rate-limiter";
 import { walletLedgerDesign } from "./algorithms/designs/wallet-ledger";
-import { protocolFundamentals } from "./algorithms/backend/protocol-fundamentals";
+import { osiModelTopic } from "./algorithms/backend/osi-model";
+import { ipTransportTopic } from "./algorithms/backend/ip-transport";
+import { tlsHttpTopic } from "./algorithms/backend/tls-http";
+import { websocketsGrpcTopic } from "./algorithms/backend/websockets-grpc";
+import { proxyingLoadBalancingTopic } from "./algorithms/backend/proxying-load-balancing";
+import { estimationsTopic } from "./algorithms/backend/estimations";
+import { executionPatternsTopic } from "./algorithms/backend/execution-patterns";
 
 const patternsTopics = [
   consistentHashing,
@@ -79,7 +85,15 @@ const fintechTopics = [
 ];
 
 // Backend Fundamentals - protocols, networking, server concepts
-const backendFundamentalsTopics: Algorithm[] = [protocolFundamentals];
+const backendFundamentalsTopics: Algorithm[] = [
+  osiModelTopic,
+  ipTransportTopic,
+  tlsHttpTopic,
+  websocketsGrpcTopic,
+  proxyingLoadBalancingTopic,
+  estimationsTopic,
+  executionPatternsTopic,
+];
 
 export const algorithmCategories: Category[] = [
   {
