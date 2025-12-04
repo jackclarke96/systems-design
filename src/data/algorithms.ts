@@ -20,6 +20,7 @@ import { paymentLifecycleTopic } from "./algorithms/data/payment-lifecycle";
 import { reconciliationTopic } from "./algorithms/data/reconciliation";
 import { rateLimiterDesign } from "./algorithms/designs/rate-limiter";
 import { walletLedgerDesign } from "./algorithms/designs/wallet-ledger";
+import { pspIntegration } from "./algorithms/designs/psp-integration";
 import { osiModelTopic } from "./algorithms/backend/osi-model";
 import { ipTransportTopic } from "./algorithms/backend/ip-transport";
 import { tlsHttpTopic } from "./algorithms/backend/tls-http";
@@ -51,6 +52,7 @@ const patternsTopics = [
 const designsTopics = [
   rateLimiterDesign,
   walletLedgerDesign,
+  pspIntegration,
   {
     ...alg4pt2,
     id: "url-shortener",
