@@ -6,6 +6,8 @@ import {
   CheckCircle, AlertTriangle, Zap, FileText, Link, Clock
 } from "lucide-react";
 import pspArchitecture from "@/assets/psp-integration-architecture.png";
+import paymentServiceSchema from "@/assets/payment-service-schema.png";
+import ledgerServiceSchema from "@/assets/ledger-service-schema.png";
 
 const ConceptCard = ({ 
   title, 
@@ -106,7 +108,7 @@ const PropertyCard = ({ title, children, how }: { title: string; children: React
   </div>
 );
 
-type FlowTab = "architecture" | "make-payment" | "get-status" | "reconciliation" | "properties" | "concepts";
+type FlowTab = "architecture" | "schema" | "make-payment" | "get-status" | "reconciliation" | "properties" | "concepts";
 
 export const Content = () => {
   const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
@@ -114,6 +116,7 @@ export const Content = () => {
 
   const flowTabs: { id: FlowTab; label: string }[] = [
     { id: "architecture", label: "Architecture" },
+    { id: "schema", label: "Schema" },
     { id: "make-payment", label: "Make Payment" },
     { id: "get-status", label: "Get Status" },
     { id: "reconciliation", label: "Reconciliation" },
@@ -240,6 +243,130 @@ export const Content = () => {
                     "Creates corrections or flags discrepancies"
                   ]} />
                 </ConceptCard>
+              </div>
+            </div>
+          )}
+
+          {/* Schema Tab */}
+          {activeFlow === "schema" && (
+            <div className="space-y-6">
+              <SectionHeader>Database Schema</SectionHeader>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-center">Payment Service DB</h4>
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <img 
+                      src={paymentServiceSchema} 
+                      alt="Payment Service Schema" 
+                      className="w-full rounded-lg border border-border bg-white"
+                    />
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">payments</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• id (uuid) PK</li>
+                        <li>• merchant_id (uuid)</li>
+                        <li>• amount_cents (bigint)</li>
+                        <li>• currency (char 3)</li>
+                        <li>• state (varchar) — INITIATED, AUTHORIZED, SETTLED...</li>
+                        <li>• psp_payment_id (varchar) — external ref</li>
+                      </ul>
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">payment_idempotency_keys</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• merchant_id (uuid) PK</li>
+                        <li>• idempotency_key (varchar) PK</li>
+                        <li>• payment_id (uuid) FK → payments</li>
+                      </ul>
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">outbox_events</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• id (uuid) PK</li>
+                        <li>• aggregate_id (uuid) FK → payments</li>
+                        <li>• event_type (varchar) — PaymentSettled, etc.</li>
+                        <li>• status (varchar) — PENDING, SENT</li>
+                      </ul>
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">psp_webhook_events</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• id (uuid) PK</li>
+                        <li>• psp_event_id (varchar) UNIQUE — dedup key</li>
+                        <li>• psp_payment_id (varchar) FK</li>
+                        <li>• event_type (varchar) — CAPTURED, REFUNDED...</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-center">Ledger Service DB</h4>
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <img 
+                      src={ledgerServiceSchema} 
+                      alt="Ledger Service Schema" 
+                      className="w-full rounded-lg border border-border bg-white"
+                    />
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">ledger_entries</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• id (bigserial) PK</li>
+                        <li>• event_id (uuid) FK → ledger_events</li>
+                        <li>• account_id (uuid) FK → accounts</li>
+                        <li>• amount_cents (bigint)</li>
+                        <li>• direction (char 1) — D/C</li>
+                        <li>• currency (char 3)</li>
+                        <li>• payment_id (uuid) — ref back to payment</li>
+                        <li>• entry_type (varchar) — PENDING, POSTED</li>
+                      </ul>
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">ledger_events (inbox)</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• event_id (uuid) PK — dedup key</li>
+                        <li>• event_type (varchar)</li>
+                        <li>• status (varchar) — RECEIVED, PROCESSED</li>
+                      </ul>
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <h5 className="font-semibold mb-2">accounts</h5>
+                      <ul className="space-y-1 text-muted-foreground font-mono text-xs">
+                        <li>• id (uuid) PK</li>
+                        <li>• account_type (varchar) — MERCHANT, PLATFORM, etc.</li>
+                        <li>• external_ref (varchar) — link to merchant/user</li>
+                        <li>• currency (char 3)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 mt-6">
+                <h4 className="font-semibold mb-2">Key Design Choices</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span><strong>Composite PK</strong> on idempotency_keys (merchant_id + key) ensures per-merchant uniqueness</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span><strong>psp_event_id UNIQUE</strong> on webhook_events enables idempotent webhook processing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span><strong>event_id as PK</strong> in ledger_events is the inbox dedup key</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span><strong>bigserial</strong> for ledger_entries.id provides append-only ordering</span>
+                  </li>
+                </ul>
               </div>
             </div>
           )}
