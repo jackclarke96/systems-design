@@ -1,4 +1,4 @@
-import { Category } from "@/types/algorithms";
+import { Algorithm, Category } from "@/types/algorithms";
 import { componentShowcase } from "./componentExamples";
 import { alg4pt1 } from "./algorithms/4.1-bfs";
 import { alg4pt2 } from "./algorithms/4.2-minimal-tree";
@@ -78,6 +78,9 @@ const fintechTopics = [
   }] : []),
 ];
 
+// Backend Fundamentals - protocols, networking, server concepts
+const backendFundamentalsTopics: Algorithm[] = [];
+
 export const algorithmCategories: Category[] = [
   {
     id: "patterns",
@@ -93,6 +96,11 @@ export const algorithmCategories: Category[] = [
     id: "data",
     name: "Data Fundamentals",
     algorithms: dataFundamentalsTopics,
+  },
+  {
+    id: "backend",
+    name: "Backend Fundamentals",
+    algorithms: backendFundamentalsTopics,
   },
   {
     id: "fintech",
