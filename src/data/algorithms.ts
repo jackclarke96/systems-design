@@ -27,6 +27,7 @@ import { websocketsGrpcTopic } from "./algorithms/backend/websockets-grpc";
 import { proxyingLoadBalancingTopic } from "./algorithms/backend/proxying-load-balancing";
 import { estimationsTopic } from "./algorithms/backend/estimations";
 import { executionPatternsTopic } from "./algorithms/backend/execution-patterns";
+import { cloudCostsTopic } from "./algorithms/backend/cloud-costs";
 
 const patternsTopics = [
   consistentHashing,
@@ -93,6 +94,7 @@ const backendFundamentalsTopics: Algorithm[] = [
   proxyingLoadBalancingTopic,
   estimationsTopic,
   executionPatternsTopic,
+  cloudCostsTopic,
 ];
 
 export const algorithmCategories: Category[] = [
