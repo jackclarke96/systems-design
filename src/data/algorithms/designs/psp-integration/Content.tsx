@@ -391,6 +391,12 @@ export const Content = () => {
           {/* Reconciliation Tab */}
           {activeFlow === "reconciliation" && (
             <div className="space-y-6">
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+                <p className="text-sm italic text-muted-foreground">
+                  "Balances are a cache; the ledger is the truth. We reconcile the two regularly."
+                </p>
+              </div>
+
               <SectionHeader>External Reconciliation (PSP/Bank vs Us)</SectionHeader>
 
               <div className="space-y-4">
@@ -399,7 +405,7 @@ export const Content = () => {
                   <BulletList items={[
                     "Recon job pulls PSP/bank settlement report for day D",
                     "For each row, try to match against our payments/ledger_entries",
-                    "Match by PSP id or amount + time + merchant"
+                    <>Match by reference (PSP id, auth id, card token) or by <code className="bg-muted px-1 rounded text-xs">amount + time window + merchant + card fingerprint</code></>
                   ]} />
                 </div>
 
@@ -422,22 +428,49 @@ export const Content = () => {
                   </div>
                 </div>
 
-                <div className="rounded-lg border border-border bg-card p-4">
-                  <h4 className="font-semibold mb-2">Resolution</h4>
-                  <p className="text-sm text-muted-foreground">
-                    For ONLY_EXTERNAL / MISMATCH → Create compensating ledger entries or flag for ops review
-                  </p>
+                <SectionHeader>Handling Mismatches</SectionHeader>
+
+                <div className="grid gap-4">
+                  <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 p-4">
+                    <h4 className="font-semibold text-orange-600 dark:text-orange-400 mb-2">Bank shows a transaction you don't</h4>
+                    <p className="text-sm text-muted-foreground mb-2"><strong>Reason:</strong> Possible data loss, PSP webhook missed, import lag</p>
+                    <p className="text-sm text-muted-foreground"><strong>Action:</strong> Create a special reconciliation ledger entry. Investigate.</p>
+                  </div>
+                  <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-4">
+                    <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">You show a transaction bank doesn't</h4>
+                    <p className="text-sm text-muted-foreground mb-2"><strong>Reason:</strong> You think money moved but it didn't</p>
+                    <p className="text-sm text-muted-foreground"><strong>Action:</strong> Add compensating entries in the ledger. Fix the bug/path that assumed success without confirmation.</p>
+                  </div>
+                  <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4">
+                    <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2">Amount mismatch</h4>
+                    <p className="text-sm text-muted-foreground mb-2"><strong>Example:</strong> Your ledger shows £100, but bank shows £99 (fees, FX, partial captures)</p>
+                    <p className="text-sm text-muted-foreground"><strong>Action:</strong> Confirm rules (e.g. fees from PSP). Model fees explicitly (extra entry to a "fees" account). Update logic.</p>
+                  </div>
                 </div>
               </div>
 
               <SectionHeader>Internal Reconciliation (Balances vs Ledger)</SectionHeader>
 
               <div className="rounded-lg border border-border bg-card p-4">
+                <p className="text-sm text-muted-foreground mb-3">
+                  <strong>Source of truth:</strong> ledger entries (append only, double entry)<br/>
+                  <strong>Derived view:</strong> balances table (materialised for fast reads)
+                </p>
                 <BulletList items={[
                   "Periodically recompute balances from ledger_entries for sample/all accounts",
-                  "Compare to balances materialised view",
-                  "If differences → fix view / investigate bugs"
+                  "Compare recomputed values vs balances table",
+                  "If mismatch → either fix the view or mark as needing correction"
                 ]} />
+              </div>
+
+              <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-4">
+                <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Avoid Missing/Duplicating Money</h4>
+                <BulletList items={[
+                  "Keep an append-only, double-entry ledger as the system of record",
+                  "Keep balances as derived and regularly reconcile",
+                  "Reconcile the ledger against external PSP/bank reports",
+                  "Model corrections as new entries, never mutate old ones"
+                ]} variant="green" />
               </div>
             </div>
           )}
@@ -624,7 +657,7 @@ export const Content = () => {
                   ]} />
                 </div>
 
-                <div className="rounded-lg border border-border bg-card p-4 md:col-span-2">
+                <div className="rounded-lg border border-border bg-card p-4">
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-yellow-500" />
                     CAP / Availability
@@ -633,6 +666,42 @@ export const Content = () => {
                     If ledger or broker is down: Payment state still moves to SETTLED (availability preserved). 
                     Ledger catches up later (eventual consistency + recon).
                   </p>
+                </div>
+
+                <div className="rounded-lg border border-border bg-card p-4">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <ArrowRight className="w-4 h-4 text-cyan-500" />
+                    Pending vs Posted
+                  </h4>
+                  <BulletList items={[
+                    <><strong>Pending:</strong> Holds/auths not yet settled. Used for "available to spend" checks.</>,
+                    <><strong>Posted:</strong> Settled transactions. Used for statements, reconciliation, interest.</>,
+                    <>Available balance ≈ posted + pending_credits - pending_debits</>
+                  ]} />
+                </div>
+
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 md:col-span-2">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Database className="w-4 h-4 text-primary" />
+                    Sequence Numbers for Per-Account Ordering
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Each account maintains a <code className="bg-muted px-1 rounded text-xs">last_seq_no</code>. Events carry a <code className="bg-muted px-1 rounded text-xs">seq_no</code>:
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-3 text-xs">
+                    <div className="bg-green-500/10 border border-green-500/20 rounded p-2">
+                      <code className="text-green-600 dark:text-green-400">seq_no == last_seq_no + 1</code>
+                      <p className="mt-1 text-muted-foreground">→ Apply event</p>
+                    </div>
+                    <div className="bg-orange-500/10 border border-orange-500/20 rounded p-2">
+                      <code className="text-orange-600 dark:text-orange-400">seq_no &lt;= last_seq_no</code>
+                      <p className="mt-1 text-muted-foreground">→ Duplicate, ignore</p>
+                    </div>
+                    <div className="bg-red-500/10 border border-red-500/20 rounded p-2">
+                      <code className="text-red-600 dark:text-red-400">seq_no &gt; last_seq_no + 1</code>
+                      <p className="mt-1 text-muted-foreground">→ Gap, pause/replay</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
