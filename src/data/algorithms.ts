@@ -20,7 +20,7 @@ import { paymentLifecycleTopic } from "./algorithms/data/payment-lifecycle";
 import { reconciliationTopic } from "./algorithms/data/reconciliation";
 import { rateLimiterDesign } from "./algorithms/designs/rate-limiter";
 import { walletLedgerDesign } from "./algorithms/designs/wallet-ledger";
-
+import { protocolFundamentals } from "./algorithms/backend/protocol-fundamentals";
 
 const patternsTopics = [
   consistentHashing,
@@ -79,7 +79,7 @@ const fintechTopics = [
 ];
 
 // Backend Fundamentals - protocols, networking, server concepts
-const backendFundamentalsTopics: Algorithm[] = [];
+const backendFundamentalsTopics: Algorithm[] = [protocolFundamentals];
 
 export const algorithmCategories: Category[] = [
   {
