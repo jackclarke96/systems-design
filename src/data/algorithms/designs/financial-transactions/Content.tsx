@@ -106,7 +106,7 @@ const PropertyCard = ({ title, children, how }: { title: string; children: React
   </div>
 );
 
-type FlowTab = "architecture" | "initiate-transaction" | "get-status" | "reconciliation" | "properties" | "concepts";
+type FlowTab = "architecture" | "state-machine" | "initiate-transaction" | "get-status" | "reconciliation" | "properties" | "concepts";
 
 export const Content = () => {
   const [activeTab, setActiveTab] = useState<"learn" | "quiz">("learn");
@@ -114,6 +114,7 @@ export const Content = () => {
 
   const flowTabs: { id: FlowTab; label: string }[] = [
     { id: "architecture", label: "Architecture" },
+    { id: "state-machine", label: "State Machine" },
     { id: "initiate-transaction", label: "Initiate Transaction" },
     { id: "get-status", label: "Get Status" },
     { id: "reconciliation", label: "Reconciliation" },
@@ -240,6 +241,195 @@ export const Content = () => {
                     "Creates corrections or flags discrepancies"
                   ]} />
                 </ConceptCard>
+              </div>
+            </div>
+          )}
+
+          {/* State Machine Tab */}
+          {activeFlow === "state-machine" && (
+            <div className="space-y-6">
+              <SectionHeader>Transaction State Machine</SectionHeader>
+
+              {/* Visual State Diagram */}
+              <div className="rounded-lg border border-border bg-card p-6">
+                <div className="flex flex-col items-center">
+                  {/* State Flow Diagram */}
+                  <div className="w-full max-w-3xl">
+                    {/* Row 1: RECEIVED */}
+                    <div className="flex justify-center mb-4">
+                      <div className="px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-600 dark:text-blue-400 font-semibold text-sm">
+                        RECEIVED
+                      </div>
+                    </div>
+                    <div className="flex justify-center mb-4">
+                      <ArrowRight className="w-5 h-5 text-muted-foreground rotate-90" />
+                    </div>
+
+                    {/* Row 2: VALIDATED */}
+                    <div className="flex justify-center mb-4">
+                      <div className="px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-600 dark:text-purple-400 font-semibold text-sm">
+                        VALIDATED
+                      </div>
+                    </div>
+                    <div className="flex justify-center mb-4">
+                      <ArrowRight className="w-5 h-5 text-muted-foreground rotate-90" />
+                    </div>
+
+                    {/* Row 3: PENDING_EXTERNAL */}
+                    <div className="flex justify-center mb-4">
+                      <div className="px-4 py-2 rounded-lg bg-orange-500/20 border border-orange-500/40 text-orange-600 dark:text-orange-400 font-semibold text-sm">
+                        PENDING_EXTERNAL
+                      </div>
+                    </div>
+
+                    {/* Row 4: Fork to POSTED or REJECTED */}
+                    <div className="flex justify-center gap-16 mb-4">
+                      <div className="flex flex-col items-center">
+                        <ArrowRight className="w-5 h-5 text-green-500 rotate-90 mb-2" />
+                        <div className="px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/40 text-green-600 dark:text-green-400 font-semibold text-sm">
+                          POSTED
+                        </div>
+                        <span className="text-xs text-muted-foreground mt-1">Terminal ✓</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <ArrowRight className="w-5 h-5 text-red-500 rotate-90 mb-2" />
+                        <div className="px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/40 text-red-600 dark:text-red-400 font-semibold text-sm">
+                          REJECTED
+                        </div>
+                        <span className="text-xs text-muted-foreground mt-1">Terminal ✓</span>
+                      </div>
+                    </div>
+
+                    {/* Row 5: POSTED can go to REVERSED */}
+                    <div className="flex justify-start ml-[calc(50%-8rem)] mb-2">
+                      <div className="flex flex-col items-center">
+                        <ArrowRight className="w-5 h-5 text-cyan-500 rotate-90 mb-2" />
+                        <div className="px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-600 dark:text-cyan-400 font-semibold text-sm">
+                          REVERSED
+                        </div>
+                        <span className="text-xs text-muted-foreground mt-1">Terminal ✓</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* States Explained */}
+              <SectionHeader>States</SectionHeader>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-4">
+                  <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">RECEIVED</h4>
+                  <p className="text-sm text-muted-foreground">We've accepted the client request, not yet validated.</p>
+                </div>
+                <div className="rounded-lg border border-purple-500/20 bg-purple-500/5 p-4">
+                  <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">VALIDATED</h4>
+                  <p className="text-sm text-muted-foreground">Internal checks passed; ready to talk to external system.</p>
+                </div>
+                <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 p-4">
+                  <h4 className="font-semibold text-orange-600 dark:text-orange-400 mb-2">PENDING_EXTERNAL</h4>
+                  <p className="text-sm text-muted-foreground">Request sent to external system; waiting for confirmation/settlement.</p>
+                </div>
+                <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-4">
+                  <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">POSTED</h4>
+                  <p className="text-sm text-muted-foreground">Money movement is considered final in our system. <strong>Terminal state.</strong></p>
+                </div>
+                <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-4">
+                  <h4 className="font-semibold text-cyan-600 dark:text-cyan-400 mb-2">REVERSED</h4>
+                  <p className="text-sm text-muted-foreground">Previously posted transaction has been reversed (refund/chargeback). <strong>Terminal state.</strong></p>
+                </div>
+                <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4">
+                  <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2">REJECTED</h4>
+                  <p className="text-sm text-muted-foreground">Permanently failed (validation failed, external hard failure, cancelled). <strong>Terminal state.</strong></p>
+                </div>
+              </div>
+
+              {/* Transitions */}
+              <SectionHeader>Allowed Transitions</SectionHeader>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-border bg-card p-4">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <span className="px-2 py-1 rounded bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs">1</span>
+                    On POST /transactions
+                  </h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <code className="bg-muted px-2 py-1 rounded text-xs">∅ → RECEIVED</code>
+                      <span className="text-muted-foreground">Row created with state = RECEIVED</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <code className="bg-muted px-2 py-1 rounded text-xs">RECEIVED → VALIDATED</code>
+                      <span className="text-muted-foreground">Internal checks: auth, limits, risk, balance</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <code className="bg-muted px-2 py-1 rounded text-xs">VALIDATED → PENDING_EXTERNAL</code>
+                      <span className="text-muted-foreground">We call external system to initiate/execute</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-border bg-card p-4">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <span className="px-2 py-1 rounded bg-green-500/20 text-green-600 dark:text-green-400 text-xs">2</span>
+                    External Responses / Notifications
+                  </h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <code className="bg-muted px-2 py-1 rounded text-xs">PENDING_EXTERNAL → POSTED</code>
+                        <span className="text-muted-foreground">External says "success / settled"</span>
+                      </div>
+                      <div className="ml-4 text-xs text-green-600 dark:text-green-400">
+                        In same DB tx: set state = POSTED, insert TransactionPosted into outbox_events
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <code className="bg-muted px-2 py-1 rounded text-xs">PENDING_EXTERNAL → REJECTED</code>
+                        <span className="text-muted-foreground">External says "failed / declined / expired"</span>
+                      </div>
+                      <div className="ml-4 text-xs text-muted-foreground">
+                        Set state = REJECTED (no outbox to ledger, or TransactionFailed for analytics)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-border bg-card p-4">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <span className="px-2 py-1 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs">3</span>
+                    Reversal / Chargeback / Correction
+                  </h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <code className="bg-muted px-2 py-1 rounded text-xs">POSTED → REVERSED</code>
+                        <span className="text-muted-foreground">External notifies reversal / refund / chargeback</span>
+                      </div>
+                      <div className="ml-4 text-xs text-cyan-600 dark:text-cyan-400">
+                        Moves to REVERSED, emits TransactionReversed outbox event, ledger writes compensating entries
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 p-4">
+                  <h4 className="font-semibold text-orange-600 dark:text-orange-400 mb-2">Optional: Internal Rejection</h4>
+                  <div className="flex items-center gap-2 text-sm">
+                    <code className="bg-muted px-2 py-1 rounded text-xs">VALIDATED → REJECTED</code>
+                    <span className="text-muted-foreground">Late validation failure (e.g. limits, risk)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Insight */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <h4 className="font-semibold text-primary mb-2">When Do We Emit Ledger Events?</h4>
+                <p className="text-sm text-muted-foreground">
+                  <strong>Only on transitions to POSTED or REVERSED</strong> do we write to <code className="bg-muted px-1 rounded text-xs">outbox_events</code>, 
+                  which leads to <code className="bg-muted px-1 rounded text-xs">ledger_entries</code>. 
+                  The ledger reflects <strong>final money movements</strong>, not intermediate states.
+                </p>
               </div>
             </div>
           )}
