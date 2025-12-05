@@ -23,6 +23,7 @@ import { walletLedgerDesign } from "./algorithms/designs/wallet-ledger";
 import { pspIntegration } from "./algorithms/designs/psp-integration";
 import { financialTransactions } from "./algorithms/designs/financial-transactions";
 import { tradingSystem } from "./algorithms/designs/trading-system";
+import { limitsRiskDesign } from "./algorithms/designs/limits-risk";
 import { osiModelTopic } from "./algorithms/backend/osi-model";
 import { ipTransportTopic } from "./algorithms/backend/ip-transport";
 import { tlsHttpTopic } from "./algorithms/backend/tls-http";
@@ -57,12 +58,7 @@ const designsTopics = [
   pspIntegration,
   financialTransactions,
   tradingSystem,
-  {
-    ...alg4pt2,
-    id: "url-shortener",
-    title: "URL Shortener",
-    category: "designs",
-  },
+  limitsRiskDesign,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-2",
