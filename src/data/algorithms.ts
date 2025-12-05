@@ -24,6 +24,7 @@ import { pspIntegration } from "./algorithms/designs/psp-integration";
 import { financialTransactions } from "./algorithms/designs/financial-transactions";
 import { tradingSystem } from "./algorithms/designs/trading-system";
 import { limitsRiskDesign } from "./algorithms/designs/limits-risk";
+import { kycServiceDesign } from "./algorithms/designs/kyc-service";
 import { osiModelTopic } from "./algorithms/backend/osi-model";
 import { ipTransportTopic } from "./algorithms/backend/ip-transport";
 import { tlsHttpTopic } from "./algorithms/backend/tls-http";
@@ -59,6 +60,7 @@ const designsTopics = [
   financialTransactions,
   tradingSystem,
   limitsRiskDesign,
+  kycServiceDesign,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-2",
