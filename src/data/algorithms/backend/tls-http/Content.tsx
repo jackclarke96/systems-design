@@ -199,5 +199,106 @@ export const Content = () => (
         0-RTT requires a previous connection to the same server (pre-shared key). First connection still needs full handshake.
       </Callout>
     </Section>
+
+    {/* HTTP Headers */}
+    <Section title="HTTP Headers">
+      <div className="grid md:grid-cols-2 gap-5">
+        {/* Request Side Headers */}
+        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+          <h3 className="font-bold text-foreground text-center border-b border-border pb-2">Request Side Headers</h3>
+          
+          <div className="space-y-3 text-sm">
+            <div>
+              <p><strong className="text-foreground">Authorization:</strong> <span className="text-muted-foreground">for tokens/creds</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Content-Type:</strong> <span className="text-muted-foreground">How is body encoded?</span></p>
+              <p className="text-xs text-muted-foreground ml-4 italic">application/json, application/grpc, application/x-www-form-urlencoded</p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Accept:</strong> <span className="text-muted-foreground">what formats can I handle. Used for content negotiation and versioning</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Host:</strong> <span className="text-muted-foreground">used for virtual domain hosting. L7 gateways can route based on host & path</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Cookie:</strong> <span className="text-muted-foreground">holds session cookie in SPA (CSRF, XSS considerations)</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">X-Request-Id:</strong> <span className="text-muted-foreground">correlation headers for tracing</span></p>
+            </div>
+          </div>
+        </div>
+
+        {/* Response Side Headers */}
+        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+          <h3 className="font-bold text-foreground text-center border-b border-border pb-2">Response Side Headers</h3>
+          
+          <div className="space-y-3 text-sm">
+            <div>
+              <p><strong className="text-foreground">Set-Cookie:</strong> <span className="text-muted-foreground">Server instructs browser to store a cookie with flags (HttpOnly, Secure, SameSite)</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Content-Type:</strong> <span className="text-muted-foreground">How is body encoded?</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Location:</strong> <span className="text-muted-foreground">e.g. 3xx to redirect, or 201 to point to new resource</span></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Cache-Control:</strong> <span className="text-muted-foreground">no-store, max-age, public, private. Finance data → probably no-store</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Proxies/LB Context */}
+      <div className="bg-muted/50 rounded-xl p-5 space-y-3 mt-5">
+        <h3 className="font-bold text-foreground">Proxies/LB Context</h3>
+        <div className="space-y-2 text-sm">
+          <div>
+            <p><strong className="text-foreground">X-Forwarded-For:</strong> <span className="text-muted-foreground">Original client IP as it passes through load balancers/proxies (e.g. for logging)</span></p>
+          </div>
+          <div>
+            <p><strong className="text-foreground">X-Forwarded-Proto / X-Forwarded-Host:</strong> <span className="text-muted-foreground">Let backend know original scheme/host (e.g. if SSL terminates at gateway)</span></p>
+          </div>
+        </div>
+      </div>
+
+      {/* Caching/Conditional Requests */}
+      <div className="bg-muted/50 rounded-xl p-5 space-y-3 mt-5">
+        <h3 className="font-bold text-foreground">Caching/Conditional Requests</h3>
+        <div className="space-y-2 text-sm">
+          <p><strong className="text-foreground">ETag + If-None-Match:</strong> <span className="text-muted-foreground">Server sends ETag, client sends If-None-Match to validate cache</span></p>
+          <p><strong className="text-foreground">Last-Modified + If-Modified-Since:</strong> <span className="text-muted-foreground">Timestamp-based cache validation</span></p>
+        </div>
+      </div>
+
+      {/* CORS */}
+      <div className="bg-muted/50 rounded-xl p-5 space-y-3 mt-5">
+        <h3 className="font-bold text-foreground">CORS</h3>
+        <div className="space-y-2 text-sm">
+          <p><strong className="text-foreground">Origin</strong> <span className="text-muted-foreground">(request): Browser sends origin of the page making the request</span></p>
+          <p><strong className="text-foreground">Access-Control-Allow-Origin</strong> <span className="text-muted-foreground">(response): Which origins are allowed</span></p>
+          <p><strong className="text-foreground">Access-Control-Allow-Credentials:</strong> <span className="text-muted-foreground">If cookies + SPAs need cross-origin requests</span></p>
+        </div>
+        <Callout type="info" title="CORS Summary">
+          Browser sends Origin, server responds with CORS headers to control which frontends can call the API from JS.
+        </Callout>
+      </div>
+
+      {/* Security Hardening Headers */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4 mt-5">
+        <h3 className="font-bold text-foreground">Security Hardening Headers</h3>
+        <div className="space-y-2 text-sm">
+          <p><strong className="text-foreground">Strict-Transport-Security (HSTS):</strong> <span className="text-muted-foreground">Forces browser to use HTTPS</span></p>
+          <p><strong className="text-foreground">Content-Security-Policy (CSP):</strong> <span className="text-muted-foreground">Limit where scripts can be loaded from (XSS prevention)</span></p>
+          <p><strong className="text-foreground">X-Frame-Options/frame-ancestors:</strong> <span className="text-muted-foreground">Prevents clickjacking (blocks site in iFrames)</span></p>
+          <p><strong className="text-foreground">X-Content-Type-Options: nosniff:</strong> <span className="text-muted-foreground">Stop MIME sniffing</span></p>
+        </div>
+        <Callout type="tip" title="Edge vs API Auth">
+          At the edge we set security headers like HSTS, CSP, and X-Content-Type-Options to harden the web UI, but core API auth is via OAuth2/JWT in the Authorization header.
+        </Callout>
+      </div>
+    </Section>
   </div>
 );
