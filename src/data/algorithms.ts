@@ -26,6 +26,7 @@ import { tradingSystem } from "./algorithms/designs/trading-system";
 import { limitsRiskDesign } from "./algorithms/designs/limits-risk";
 import { kycServiceDesign } from "./algorithms/designs/kyc-service";
 import { stockExchangeDesign } from "./algorithms/designs/stock-exchange";
+import { financeTradeoffsDesign } from "./algorithms/designs/finance-tradeoffs";
 import { osiModelTopic } from "./algorithms/backend/osi-model";
 import { ipTransportTopic } from "./algorithms/backend/ip-transport";
 import { tlsHttpTopic } from "./algorithms/backend/tls-http";
@@ -64,6 +65,7 @@ const designsTopics = [
   limitsRiskDesign,
   kycServiceDesign,
   stockExchangeDesign,
+  financeTradeoffsDesign,
   ...(FEATURES.SHOW_EXAMPLES ? [{
     ...componentShowcase,
     id: "example-components-2",
