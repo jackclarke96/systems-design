@@ -32,6 +32,41 @@ const CategoryGrid = ({ children }: { children: React.ReactNode }) => (
   <div className="space-y-3">{children}</div>
 );
 
+const PracticeScenario = ({ 
+  title, 
+  prompt, 
+  keyQuestions 
+}: { 
+  title: string; 
+  prompt: string; 
+  keyQuestions: string[];
+}) => {
+  const [showQuestions, setShowQuestions] = useState(false);
+  
+  return (
+    <div className="mb-4 p-4 border border-border rounded-lg bg-card">
+      <h4 className="font-semibold text-foreground mb-2">{title}</h4>
+      <p className="text-muted-foreground text-sm mb-3 italic">"{prompt}"</p>
+      <button
+        onClick={() => setShowQuestions(!showQuestions)}
+        className="text-sm text-primary hover:underline"
+      >
+        {showQuestions ? "Hide key questions" : "Reveal key questions →"}
+      </button>
+      {showQuestions && (
+        <ul className="mt-3 space-y-1">
+          {keyQuestions.map((q, i) => (
+            <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+              <span className="text-primary">•</span>
+              {q}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 export const Content = () => {
   const [activeTab, setActiveTab] = useState("learn");
 
@@ -328,6 +363,129 @@ export const Content = () => {
                 </div>
               </div>
             </div>
+          </Section>
+
+          {/* Practice Scenarios */}
+          <Section>
+            <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <HelpCircle className="w-5 h-5 text-primary" />
+              Practice Scenarios
+            </h2>
+            <p className="text-muted-foreground mb-4">
+              For each prompt, identify the key questions you would ask before designing.
+            </p>
+
+            <PracticeScenario
+              title="Design a Payment Processing System"
+              prompt="Build a system that processes credit card payments for an e-commerce platform."
+              keyQuestions={[
+                "Strong consistency required? (likely yes - money)",
+                "Expected TPS now and in 2 years?",
+                "Do we need to handle refunds, chargebacks?",
+                "PCI-DSS compliance required?",
+                "Sync response (card approved/declined) or async?",
+                "Multi-currency support needed?",
+                "What PSPs/gateways do we integrate with?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a Real-Time Chat System"
+              prompt="Build a messaging system like Slack or WhatsApp for a company."
+              keyQuestions={[
+                "How many concurrent users? (scale)",
+                "Message delivery guarantees - at-least-once? exactly-once?",
+                "Do we need message history/search?",
+                "Group chats? Max group size?",
+                "Presence (online/offline status)?",
+                "End-to-end encryption required?",
+                "Mobile push notifications?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a URL Shortener"
+              prompt="Build a service like bit.ly that shortens URLs."
+              keyQuestions={[
+                "Expected URLs created per day?",
+                "Read:write ratio? (likely high reads)",
+                "URL expiration? Custom aliases?",
+                "Analytics (click counts, referrers)?",
+                "Latency requirements for redirects?",
+                "Geographic distribution of users?",
+                "Rate limiting per user?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a Stock Trading Platform"
+              prompt="Build a system for placing and executing stock trades."
+              keyQuestions={[
+                "Strong consistency for order matching? (yes - money)",
+                "Latency requirements? (likely < 10ms for matching)",
+                "Order types supported? (limit, market, stop-loss)",
+                "Pre-market/after-hours trading?",
+                "Real-time price feeds?",
+                "Regulatory/audit requirements?",
+                "Position and P&L calculations real-time?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a Notification Service"
+              prompt="Build a system that sends push, email, and SMS notifications."
+              keyQuestions={[
+                "Volume - notifications per day?",
+                "Latency - real-time or batch OK?",
+                "Delivery guarantees - at-least-once? retry policy?",
+                "User preferences (opt-out, quiet hours)?",
+                "Rate limiting per user to avoid spam?",
+                "Multi-channel (push + email) per event?",
+                "Tracking (delivered, opened, clicked)?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a Rate Limiter"
+              prompt="Build a distributed rate limiting service for an API gateway."
+              keyQuestions={[
+                "Rate limit by what? (user, IP, API key)",
+                "Limits - per second, minute, hour?",
+                "Hard limit (block) or soft (degrade)?",
+                "Distributed across multiple servers?",
+                "Latency budget? (must be very fast)",
+                "Different tiers/plans with different limits?",
+                "Burst allowance or strict?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a Search Autocomplete"
+              prompt="Build a typeahead search suggestion system like Google search."
+              keyQuestions={[
+                "Latency requirement? (< 100ms for good UX)",
+                "Personalized suggestions or global?",
+                "How often do suggestions update?",
+                "Support typo correction?",
+                "Multi-language?",
+                "Offensive content filtering?",
+                "Expected QPS?"
+              ]}
+            />
+
+            <PracticeScenario
+              title="Design a Ride-Sharing Service"
+              prompt="Build the backend for matching riders with drivers like Uber."
+              keyQuestions={[
+                "Real-time location updates - how often?",
+                "Matching algorithm criteria? (distance, rating, ETA)",
+                "Surge pricing?",
+                "Strong consistency for ride state?",
+                "Payment integration?",
+                "Driver/rider ratings?",
+                "Geographic coverage - single city or global?"
+              ]}
+            />
           </Section>
         </TabsContent>
 
