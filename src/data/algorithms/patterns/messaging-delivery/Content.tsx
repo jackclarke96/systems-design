@@ -284,6 +284,106 @@ export const Content = () => {
         />
       </div>
 
+      <SectionHeader>Kafka: Partitions & Offsets</SectionHeader>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <ConceptCard title="Partitions" icon={Layers} variant="purple">
+          <BulletList items={[
+            <>A <strong>topic</strong> is split into multiple <strong>partitions</strong></>,
+            <>Each partition is an <strong>ordered, append-only log</strong></>,
+            <>Messages are assigned to partitions by <strong>key hash</strong> (or round-robin if no key)</>,
+            <><strong>Same key → same partition → ordering guaranteed</strong></>,
+            "More partitions = more parallelism (but more overhead)"
+          ]} />
+        </ConceptCard>
+
+        <ConceptCard title="Offsets" icon={Database} variant="blue">
+          <BulletList items={[
+            <>Each message in a partition has a unique <strong>offset</strong> (sequential ID)</>,
+            <><strong>Consumers track their offset</strong> per partition</>,
+            "On restart, consumer resumes from last committed offset",
+            <><strong>Manual vs auto-commit:</strong> trade-off between safety and simplicity</>,
+            "Offset = your progress marker in the log"
+          ]} />
+        </ConceptCard>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-border bg-card p-4">
+        <h4 className="font-semibold mb-3">Consumer Groups</h4>
+        <BulletList items={[
+          <><strong>Consumer group:</strong> a set of consumers that share the work of reading a topic</>,
+          "Each partition is assigned to exactly ONE consumer in the group",
+          <>If you have 4 partitions and 2 consumers → each consumer reads 2 partitions</>,
+          <>If you have 4 partitions and 6 consumers → 2 consumers sit idle</>,
+          <><strong>Different groups</strong> each get ALL messages (like separate subscriptions)</>
+        ]} />
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-xs border border-border rounded">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="p-2 text-left">Partition</th>
+                <th className="p-2 text-left">Group A Consumer</th>
+                <th className="p-2 text-left">Group B Consumer</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr><td className="p-2">P0</td><td className="p-2">Consumer-A1</td><td className="p-2">Consumer-B1</td></tr>
+              <tr><td className="p-2">P1</td><td className="p-2">Consumer-A1</td><td className="p-2">Consumer-B2</td></tr>
+              <tr><td className="p-2">P2</td><td className="p-2">Consumer-A2</td><td className="p-2">Consumer-B1</td></tr>
+              <tr><td className="p-2">P3</td><td className="p-2">Consumer-A2</td><td className="p-2">Consumer-B2</td></tr>
+            </tbody>
+          </table>
+          <p className="text-xs text-muted-foreground mt-2 italic">Each group processes all messages independently; within a group, partitions are distributed.</p>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h4 className="font-semibold mb-3">Partition Key Strategy</h4>
+          <BulletList items={[
+            <><strong>account_id</strong> as key → all events for an account go to same partition → ordered</>,
+            <><strong>order_id</strong> as key → all order events together</>,
+            <>No key (null) → round-robin across partitions (no ordering)</>,
+            <><strong>Hot partition risk:</strong> one key with 90% of traffic → imbalanced load</>
+          ]} />
+        </div>
+
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h4 className="font-semibold mb-3">Offset Commit Strategies</h4>
+          <BulletList items={[
+            <><strong>Auto-commit:</strong> offsets committed periodically (risk: process before commit → reprocess on restart)</>,
+            <><strong>Manual commit after processing:</strong> safer, at-least-once semantics</>,
+            <><strong>Manual commit before processing:</strong> at-most-once (risk: lose messages)</>,
+            <><strong>Transactional:</strong> commit offset + DB write atomically (exactly-once)</>
+          ]} />
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <CheckCircle className="w-6 h-6 text-green-500" />
+          <h3 className="font-bold text-lg">Kafka Key Takeaways</h3>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="font-medium mb-1">Ordering</p>
+            <p className="text-muted-foreground text-xs">Guaranteed within a partition only. Use partition key to ensure related messages stay together.</p>
+          </div>
+          <div>
+            <p className="font-medium mb-1">Scaling</p>
+            <p className="text-muted-foreground text-xs">Add partitions to increase parallelism. Max consumers = number of partitions.</p>
+          </div>
+          <div>
+            <p className="font-medium mb-1">Durability</p>
+            <p className="text-muted-foreground text-xs">Messages persisted to disk, replicated across brokers. Can replay from any offset.</p>
+          </div>
+          <div>
+            <p className="font-medium mb-1">Exactly-Once</p>
+            <p className="text-muted-foreground text-xs">Use transactional producers + idempotent consumers + offset commit in same TX.</p>
+          </div>
+        </div>
+      </div>
+
       <SectionHeader>Quick Reference</SectionHeader>
 
       <div className="overflow-x-auto">
@@ -320,6 +420,16 @@ export const Content = () => {
               <td className="p-3 font-medium">Inbox</td>
               <td className="p-3 text-muted-foreground">Exactly-once consumption</td>
               <td className="p-3">Insert-or-ignore dedup</td>
+            </tr>
+            <tr className="hover:bg-muted/30">
+              <td className="p-3 font-medium">Kafka Partition</td>
+              <td className="p-3 text-muted-foreground">Parallelism + ordering</td>
+              <td className="p-3">Key hash → partition</td>
+            </tr>
+            <tr className="hover:bg-muted/30">
+              <td className="p-3 font-medium">Consumer Group</td>
+              <td className="p-3 text-muted-foreground">Load distribution</td>
+              <td className="p-3">Partition assignment</td>
             </tr>
           </tbody>
         </table>
