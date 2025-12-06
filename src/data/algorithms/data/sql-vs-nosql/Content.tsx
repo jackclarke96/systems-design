@@ -374,5 +374,157 @@ const LearnContent = () => (
         </p>
       </Callout>
     </section>
+
+    {/* Scaling Thresholds */}
+    <section className="border-t border-border pt-8">
+      <h2 className="text-xl font-bold text-center mb-6">
+        Scaling Thresholds Cheat Sheet
+      </h2>
+      <p className="text-sm text-muted-foreground text-center mb-6">
+        When do you need concurrency, sharding, caching? Rough TPS/data thresholds.
+      </p>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+          <thead className="bg-muted/50">
+            <tr>
+              <th className="text-left p-3 font-semibold">Scale</th>
+              <th className="text-left p-3 font-semibold">Reads (QPS)</th>
+              <th className="text-left p-3 font-semibold">Writes (TPS)</th>
+              <th className="text-left p-3 font-semibold">Data Size</th>
+              <th className="text-left p-3 font-semibold">What You Need</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            <tr className="hover:bg-muted/30">
+              <td className="p-3 font-medium text-green-600">Small</td>
+              <td className="p-3">&lt; 1K</td>
+              <td className="p-3">&lt; 100</td>
+              <td className="p-3">&lt; 10 GB</td>
+              <td className="p-3 text-muted-foreground">Single Postgres, connection pooling</td>
+            </tr>
+            <tr className="hover:bg-muted/30">
+              <td className="p-3 font-medium text-blue-600">Medium</td>
+              <td className="p-3">1K – 10K</td>
+              <td className="p-3">100 – 1K</td>
+              <td className="p-3">10 GB – 500 GB</td>
+              <td className="p-3 text-muted-foreground">Read replicas, connection pooling, indexing, query optimization</td>
+            </tr>
+            <tr className="hover:bg-muted/30">
+              <td className="p-3 font-medium text-orange-600">Large</td>
+              <td className="p-3">10K – 100K</td>
+              <td className="p-3">1K – 10K</td>
+              <td className="p-3">500 GB – 5 TB</td>
+              <td className="p-3 text-muted-foreground">Caching (Redis), read replicas, async processing, partitioning</td>
+            </tr>
+            <tr className="hover:bg-muted/30">
+              <td className="p-3 font-medium text-red-600">Massive</td>
+              <td className="p-3">100K+</td>
+              <td className="p-3">10K+</td>
+              <td className="p-3">5+ TB</td>
+              <td className="p-3 text-muted-foreground">Sharding, NoSQL, multi-region, CDN, specialized DBs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4 mt-6">
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <h4 className="font-bold text-foreground">Concurrency Patterns</h4>
+          <ul className="text-xs space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Connection pooling:</strong> Always. Even at small scale (PgBouncer, HikariCP)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Async/queues:</strong> &gt;100 TPS for slow operations (emails, webhooks)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Optimistic locking:</strong> When contention is low (&lt;5% conflicts)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Pessimistic locking:</strong> When contention is high or correctness critical</span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <h4 className="font-bold text-foreground">Caching Triggers</h4>
+          <ul className="text-xs space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="text-green-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Add Redis cache:</strong> When read QPS &gt; 5-10K or latency matters</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-green-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Cache hot paths:</strong> User sessions, feature flags, config</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-green-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Cache computed data:</strong> Dashboards, aggregations, leaderboards</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-green-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Don't cache:</strong> Frequently changing data, transactional reads</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <h4 className="font-bold text-foreground">Sharding Triggers</h4>
+          <ul className="text-xs space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="text-orange-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">When to shard:</strong> Single node can't handle write load or data size (&gt;1-5 TB)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Shard key:</strong> tenant_id, user_id, region — high cardinality, even distribution</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Trade-off:</strong> Cross-shard queries become expensive/impossible</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Alternatives first:</strong> Partitioning, archiving old data, read replicas</span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <h4 className="font-bold text-foreground">Partitioning (within single DB)</h4>
+          <ul className="text-xs space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="text-purple-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">When:</strong> Tables &gt; 100M rows or &gt; 100 GB</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Range partition:</strong> By date (logs, events, transactions)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">List partition:</strong> By region, tenant, status</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-500 mt-0.5">•</span>
+              <span><strong className="text-foreground">Hash partition:</strong> Even distribution when no natural key</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <Callout type="tip" title="Interview Tip" className="mt-6">
+        <p className="text-sm leading-relaxed">
+          "At 10K QPS reads I'd add caching. At 10K TPS writes I'd consider sharding. Before sharding, I'd try partitioning, read replicas, and archiving old data. Sharding is a last resort because of the complexity it adds."
+        </p>
+      </Callout>
+    </section>
   </div>
 );
