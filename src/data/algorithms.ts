@@ -33,6 +33,7 @@ import { proxyingLoadBalancingTopic } from "./algorithms/backend/proxying-load-b
 import { estimationsTopic } from "./algorithms/backend/estimations";
 import { executionPatternsTopic } from "./algorithms/backend/execution-patterns";
 import { cloudCostsTopic } from "./algorithms/backend/cloud-costs";
+import { securityFundamentalsTopic } from "./algorithms/backend/security-fundamentals";
 
 const patternsTopics = [
   consistentHashing,
@@ -99,6 +100,7 @@ const backendFundamentalsTopics: Algorithm[] = [
   estimationsTopic,
   executionPatternsTopic,
   cloudCostsTopic,
+  securityFundamentalsTopic,
 ];
 
 export const algorithmCategories: Category[] = [
