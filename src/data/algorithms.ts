@@ -36,6 +36,7 @@ import { estimationsTopic } from "./algorithms/backend/estimations";
 import { executionPatternsTopic } from "./algorithms/backend/execution-patterns";
 import { cloudCostsTopic } from "./algorithms/backend/cloud-costs";
 import { securityFundamentalsTopic } from "./algorithms/backend/security-fundamentals";
+import { askingQuestionsTopic } from "./algorithms/backend/asking-questions";
 
 const patternsTopics = [
   consistentHashing,
@@ -96,6 +97,7 @@ const fintechTopics = [
 
 // Backend Fundamentals - protocols, networking, server concepts
 const backendFundamentalsTopics: Algorithm[] = [
+  askingQuestionsTopic,
   osiModelTopic,
   ipTransportTopic,
   tlsHttpTopic,
