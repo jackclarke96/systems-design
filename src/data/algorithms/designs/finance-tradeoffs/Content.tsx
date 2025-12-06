@@ -747,6 +747,160 @@ const quizQuestions = [
     ],
     correctIndex: 2,
     explanation: "acks=all means the producer waits for all in-sync replicas to acknowledge. With RF=3, the event survives even if some brokers fail."
+  },
+  {
+    question: "What problem does the outbox relay pattern solve?",
+    options: [
+      "It makes Kafka faster",
+      "It ensures DB write and event publish are atomic—no lost events on crash",
+      "It reduces database load",
+      "It enables exactly-once semantics"
+    ],
+    correctIndex: 1,
+    explanation: "The outbox table is written in the same DB transaction as the main data. A separate relay reads from outbox and publishes to Kafka, ensuring no events are lost."
+  },
+  {
+    question: "When would you choose separate TransactionService and LedgerService?",
+    options: [
+      "When you want simpler debugging",
+      "When you need independent scaling and can accept eventual consistency",
+      "When you want strong consistency",
+      "When you have a small team"
+    ],
+    correctIndex: 1,
+    explanation: "Separate services allow independent scaling and evolution, but require eventual consistency patterns (outbox + events) or complex distributed transactions."
+  },
+  {
+    question: "What is the 'applied_events' table used for in event consumers?",
+    options: [
+      "Storing all events for replay",
+      "Tracking which events have been processed to ensure idempotency",
+      "Caching event payloads",
+      "Logging errors"
+    ],
+    correctIndex: 1,
+    explanation: "The applied_events table records processed event IDs. Before processing, the consumer checks if the event was already applied, preventing duplicate processing."
+  },
+  {
+    question: "Why might you choose RabbitMQ over Kafka for a smaller system?",
+    options: [
+      "RabbitMQ has better durability",
+      "RabbitMQ is easier to operate and good enough for many workloads",
+      "RabbitMQ has better partitioning",
+      "RabbitMQ is faster"
+    ],
+    correctIndex: 1,
+    explanation: "RabbitMQ is operationally simpler than Kafka. For systems that don't need Kafka's partitioning, replay, or extreme throughput, RabbitMQ is often sufficient."
+  },
+  {
+    question: "What's the risk of random partitioning in Kafka for financial events?",
+    options: [
+      "Events are delivered slower",
+      "Events for the same account can be processed in parallel, causing race conditions",
+      "Kafka rejects random keys",
+      "It uses more storage"
+    ],
+    correctIndex: 1,
+    explanation: "Random partitioning spreads events across partitions. Two events for the same account might be processed concurrently by different consumers, racing on balance updates."
+  },
+  {
+    question: "Why is Postgres often preferred over NoSQL for financial ledgers?",
+    options: [
+      "It's faster for writes",
+      "It has better horizontal scaling",
+      "ACID transactions and strong consistency are critical for money",
+      "It uses less storage"
+    ],
+    correctIndex: 2,
+    explanation: "Financial systems need ACID guarantees to ensure money is never lost or duplicated. Postgres provides strong transactional semantics that are harder to achieve in NoSQL."
+  },
+  {
+    question: "What's the main advantage of mutable balances over append-only ledgers?",
+    options: [
+      "Better audit trail",
+      "Faster point lookups—just read the balance field",
+      "Easier to debug",
+      "Works better with events"
+    ],
+    correctIndex: 1,
+    explanation: "With mutable balances, reading the current balance is a simple field lookup. Append-only requires aggregating entries, though this is often mitigated with caches or materialized views."
+  },
+  {
+    question: "What does SELECT ... FOR UPDATE achieve?",
+    options: [
+      "It makes queries faster",
+      "It locks the selected rows until the transaction commits, preventing concurrent modifications",
+      "It updates rows automatically",
+      "It enables optimistic concurrency"
+    ],
+    correctIndex: 1,
+    explanation: "SELECT FOR UPDATE acquires a row-level lock. Other transactions trying to update the same row must wait, preventing lost updates and ensuring serialized access."
+  },
+  {
+    question: "How does optimistic concurrency detect conflicts?",
+    options: [
+      "By locking rows",
+      "By checking a version/ETag field—if it changed since read, retry the operation",
+      "By using distributed locks",
+      "By queuing updates"
+    ],
+    correctIndex: 1,
+    explanation: "Optimistic concurrency reads a version number with the row. On update, it checks the version hasn't changed. If it has, another transaction modified the row, and you must retry."
+  },
+  {
+    question: "Why might webhooks time out if processed synchronously?",
+    options: [
+      "Webhooks have no timeout",
+      "If DB operations are slow, the response takes too long and the PSP times out",
+      "Synchronous processing is not allowed",
+      "The network is too slow"
+    ],
+    correctIndex: 1,
+    explanation: "PSPs expect quick responses (often < 30s). If your handler does heavy DB work before responding, slow operations can cause timeouts, leading to retries and duplicate webhooks."
+  },
+  {
+    question: "What's a dead-letter queue (DLQ) used for in webhook processing?",
+    options: [
+      "Storing successful events",
+      "Holding failed events for later inspection and retry",
+      "Speeding up processing",
+      "Encrypting payloads"
+    ],
+    correctIndex: 1,
+    explanation: "When processing fails after retries, events go to a DLQ. This prevents blocking the main queue while allowing investigation and manual/automated reprocessing."
+  },
+  {
+    question: "Why tune worker pool size to match DB connection limits?",
+    options: [
+      "More workers are always better",
+      "If workers exceed DB connections, they block waiting for connections, wasting resources",
+      "It's required by the database",
+      "It reduces memory usage"
+    ],
+    correctIndex: 1,
+    explanation: "If you have 100 workers but only 20 DB connections, 80 workers sit idle waiting. Matching pool size to downstream limits ensures efficient resource utilization."
+  },
+  {
+    question: "What happens with async DB commits on power loss?",
+    options: [
+      "All data is safe",
+      "Recently committed transactions may be lost",
+      "The database corrupts",
+      "Nothing—it auto-recovers"
+    ],
+    correctIndex: 1,
+    explanation: "Async commit returns success before data is flushed to disk. If power is lost before the flush, those transactions are lost. For financial data, this is unacceptable."
+  },
+  {
+    question: "What does min.insync.replicas control in Kafka?",
+    options: [
+      "Maximum number of consumers",
+      "Minimum replicas that must acknowledge a write before it's considered committed",
+      "Partition count",
+      "Consumer lag threshold"
+    ],
+    correctIndex: 1,
+    explanation: "min.insync.replicas sets how many replicas must be in sync for acks=all to succeed. With RF=3 and min.insync=2, writes succeed even if one replica is down."
   }
 ];
 
