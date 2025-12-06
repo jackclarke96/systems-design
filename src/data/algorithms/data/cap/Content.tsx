@@ -328,7 +328,7 @@ const LearnContent = () => (
           </div>
           <Callout type="tip" title="Strong Consistency Rule">
             <p className="text-sm">
-              If <strong>R + W &gt; N</strong>, you guarantee strong consistency because read and write sets must overlap.
+              If <strong>R + W &gt; N</strong>, you guarantee strong consistency. Why? The nodes you read from (R) and the nodes the latest write went to (W) <strong>must overlap</strong>—there aren't enough nodes for them to be disjoint. So at least one node in your read set has the latest version, and you return it.
             </p>
           </Callout>
         </div>
