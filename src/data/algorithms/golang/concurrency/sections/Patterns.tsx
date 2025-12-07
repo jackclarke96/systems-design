@@ -99,6 +99,74 @@ func (pg *PressureGauge) Process(f func()) error {
       <Callout type="tip" title="Backpressure Pattern">
         The buffered channel holds "tokens". Each request tries to acquire one. If buffer is full (all tokens taken), the default case runs and returns an error instead of blocking.
       </Callout>
+
+      <Heading>5. Using WaitGroups</Heading>
+      <Paragraph>
+        Use `sync.WaitGroup` to wait for multiple goroutines to complete. Add increments the counter, Done decrements it, and Wait blocks until zero.
+      </Paragraph>
+      <Code language="go">{`func main() {
+    var wg sync.WaitGroup
+    wg.Add(3)
+    
+    go func() {
+        defer wg.Done()  // Always defer to ensure it runs
+        doThing1()
+    }()
+    go func() {
+        defer wg.Done()
+        doThing2()
+    }()
+    go func() {
+        defer wg.Done()
+        doThing3()
+    }()
+    
+    wg.Wait()  // Blocks until all three complete
+}`}</Code>
+
+      <Callout type="tip" title="Closure Captures WaitGroup">
+        The closure captures the WaitGroup variable. This is safe because we're using the same WaitGroup instance. The closure handles concurrency bookkeeping while the called function provides the algorithm.
+      </Callout>
+
+      <Paragraph>
+        A more realistic example - processing items and gathering results:
+      </Paragraph>
+      <Code language="go">{`func processAndGather[T, R any](
+    in <-chan T, 
+    processor func(T) R, 
+    num int,
+) []R {
+    out := make(chan R, num)
+    var wg sync.WaitGroup
+    wg.Add(num)
+    
+    // Launch worker goroutines
+    for i := 0; i < num; i++ {
+        go func() {
+            defer wg.Done()
+            for v := range in {
+                out <- processor(v)
+            }
+        }()
+    }
+    
+    // Monitoring goroutine - closes out when all workers done
+    go func() {
+        wg.Wait()
+        close(out)
+    }()
+    
+    // Collect results (exits when out is closed and empty)
+    var result []R
+    for v := range out {
+        result = append(result, v)
+    }
+    return result
+}`}</Code>
+
+      <Callout type="warning" title="When to Use WaitGroups">
+        WaitGroups shouldn't be your first choice. Use them when you have cleanup to do after all goroutines exit - like closing a channel they all write to. If you just need to collect results, counting with a buffered channel is simpler.
+      </Callout>
     </Section>
   </>
 );
