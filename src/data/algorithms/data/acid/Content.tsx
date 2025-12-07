@@ -248,6 +248,32 @@ const LearnContent = () => (
           1. Write to log first → 2. Confirm to client → 3. Apply to database. On crash, replay the log.
         </p>
       </div>
+
+      {/* WAL vs Data Pages Explanation */}
+      <Callout type="info" title="WAL is Append-Only, Data Pages Are Not">
+        <div className="space-y-3">
+          <p className="text-sm leading-relaxed">
+            Say you run: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">UPDATE accounts SET balance = balance - 10 WHERE id = 123</code>
+          </p>
+          <div className="grid md:grid-cols-2 gap-4 mt-3">
+            <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-3 border border-green-200 dark:border-green-900/50">
+              <p className="font-medium text-sm text-green-700 dark:text-green-400 mb-1">WAL (Append-Only)</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Appends a new log record: <em>"Set row 123's balance to 90"</em>. Old records stay forever. You can replay the entire history from the beginning to reconstruct any past state.
+              </p>
+            </div>
+            <div className="bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3 border border-amber-200 dark:border-amber-900/50">
+              <p className="font-medium text-sm text-amber-700 dark:text-amber-400 mb-1">Data Page (In-Place Update)</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Overwrites the balance field from 100 → 90 directly in the page. The old value (100) is gone—no history preserved in the data file itself.
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            <strong>Key insight:</strong> WAL is the history; data pages are just the current state. If you need to recover or audit, you replay WAL. If you just need the current balance, you read the data page.
+          </p>
+        </div>
+      </Callout>
     </section>
 
     {/* MVCC Callout */}
