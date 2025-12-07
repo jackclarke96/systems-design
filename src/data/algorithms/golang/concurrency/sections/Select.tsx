@@ -166,5 +166,91 @@ v := <-nilCh        // HANGS FOREVER
 
 // In select: closed = always chosen; nil = never chosen`}</Code>
     </Section>
+
+    <Section title="Timeouts with Context">
+      <Paragraph>
+        Use `context.WithTimeout` to limit how long an operation can run. When the timeout is reached, the context is automatically cancelled.
+      </Paragraph>
+
+      <Heading>Basic Timeout Pattern</Heading>
+      <Code language="go">{`func doWorkWithTimeout() error {
+    // Create context that auto-cancels after 2 seconds
+    ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+    defer cancel()  // Always call cancel to release resources
+    
+    resultCh := make(chan Result, 1)
+    
+    go func() {
+        resultCh <- doExpensiveWork()
+    }()
+    
+    select {
+    case result := <-resultCh:
+        return processResult(result)
+    case <-ctx.Done():
+        return ctx.Err()  // context.DeadlineExceeded
+    }
+}`}</Code>
+
+      <Heading>Generic Timeout Wrapper</Heading>
+      <Paragraph>
+        A reusable function that runs any worker with a timeout:
+      </Paragraph>
+      <Code language="go">{`func withTimeout[T any](worker func() T, limit time.Duration) (T, error) {
+    var zero T
+    
+    ctx, cancel := context.WithTimeout(context.Background(), limit)
+    defer cancel()
+    
+    resultCh := make(chan T, 1)  // Buffered: worker can complete even if we timeout
+    
+    go func() {
+        resultCh <- worker()
+    }()
+    
+    select {
+    case result := <-resultCh:
+        return result, nil
+    case <-ctx.Done():
+        return zero, ctx.Err()
+    }
+}
+
+// Usage
+result, err := withTimeout(func() int {
+    time.Sleep(100 * time.Millisecond)
+    return 42
+}, 1*time.Second)
+
+if errors.Is(err, context.DeadlineExceeded) {
+    fmt.Println("operation timed out")
+}`}</Code>
+
+      <Callout type="warning" title="Buffered Channel Matters">
+        The result channel must be buffered (capacity 1). If we timeout and stop reading, the worker goroutine still completes and tries to send. Without a buffer, it would block forever → goroutine leak.
+      </Callout>
+
+      <Heading>Timeout vs Deadline vs Cancel</Heading>
+      <Code language="go">{`// Timeout: cancel after duration
+ctx, cancel := context.WithTimeout(parent, 5*time.Second)
+
+// Deadline: cancel at specific time
+ctx, cancel := context.WithDeadline(parent, time.Now().Add(5*time.Second))
+
+// Manual cancel only (no auto-cancel)
+ctx, cancel := context.WithCancel(parent)
+
+// All three: ALWAYS defer cancel() to release resources`}</Code>
+
+      <List>
+        <ListItem>**WithTimeout**: Duration from now - most common for API calls, DB queries</ListItem>
+        <ListItem>**WithDeadline**: Absolute time - useful when you have a fixed deadline to meet</ListItem>
+        <ListItem>**WithCancel**: Manual only - for user-initiated cancellation, shutdown signals</ListItem>
+      </List>
+
+      <Callout type="info" title="Context Propagation">
+        Pass the context to any functions that support it (HTTP clients, DB queries, etc.). They'll automatically respect the timeout and cancel their work.
+      </Callout>
+    </Section>
   </>
 );
