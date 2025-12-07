@@ -57,6 +57,10 @@ export const List = ({ children }: { children: ReactNode }) => {
 };
 
 export const ListItem = ({ children }: { children: ReactNode }) => {
+  // Support inline formatting with **bold** and `code`
+  if (typeof children === 'string') {
+    return <li className="text-sm leading-relaxed"><RichText content={children} /></li>;
+  }
   return <li className="text-sm leading-relaxed">{children}</li>;
 };
 
