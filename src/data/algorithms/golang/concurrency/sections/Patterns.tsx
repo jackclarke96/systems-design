@@ -222,6 +222,86 @@ func GetDB() *sql.DB {
       <Callout type="warning" title="Error Handling with sync.Once">
         If the function passed to `Do()` panics or fails, it still counts as "done" - subsequent calls won't retry. For initialization that might fail, consider using `sync.OnceValue` (Go 1.21+) or handle errors within the Once block.
       </Callout>
+
+      <Heading>7. When to Use Mutexes</Heading>
+      <Paragraph>
+        Mutexes obscure the flow of data through a program. When data is passed from goroutine to goroutine over a series of channels, data flow is clear and access is localized to a single goroutine at a time. When a mutex is used to protect a value, there's nothing to indicate which goroutine currently has ownership - access is shared by all concurrent processes.
+      </Paragraph>
+
+      <Callout type="tip" title="Channels vs Mutexes">
+        Use a **channel** when coordinating goroutines or tracking a value as it's transformed by a series of goroutines. Use a **mutex** when sharing access to a field in a struct.
+      </Callout>
+
+      <Paragraph>
+        Here's a scoreboard example using `sync.RWMutex`:
+      </Paragraph>
+      <Code language="go">{`type MutexScoreboardManager struct {
+    l          sync.RWMutex
+    scoreboard map[string]int
+}
+
+func NewMutexScoreboardManager() *MutexScoreboardManager {
+    return &MutexScoreboardManager{
+        scoreboard: map[string]int{},
+    }
+}
+
+func (msm *MutexScoreboardManager) Update(name string, val int) {
+    msm.l.Lock()         // Exclusive write lock
+    defer msm.l.Unlock()
+    msm.scoreboard[name] = val
+}
+
+func (msm *MutexScoreboardManager) Read(name string) (int, bool) {
+    msm.l.RLock()        // Shared read lock
+    defer msm.l.RUnlock()
+    val, ok := msm.scoreboard[name]
+    return val, ok
+}`}</Code>
+
+      <Heading>Why RWMutex Instead of Channels Here?</Heading>
+      <Paragraph>
+        If we used channels, only one reader could read at a time. With `RWMutex`, only one writer can write at a time, but the read lock is shared - many goroutines can read simultaneously.
+      </Paragraph>
+
+      <List>
+        <ListItem><strong>Channels</strong>: Each value sent goes to exactly one receiver. Great for work queues, but reads are effectively serialized through whoever owns the data.</ListItem>
+        <ListItem><strong>RWMutex</strong>: `Lock()`/`Unlock()` is exclusive (one writer). `RLock()`/`RUnlock()` is shared (many concurrent readers).</ListItem>
+      </List>
+
+      <Code language="go">{`// Channel approach - reads are serialized
+// One goroutine owns the map, others send requests on a channel
+// Requests handled one-by-one → serialized reads
+
+// RWMutex approach - parallel reads
+var (
+    mu     sync.RWMutex
+    config map[string]string
+)
+
+func Get(key string) string {
+    mu.RLock()
+    defer mu.RUnlock()
+    return config[key]  // 100 goroutines can read simultaneously
+}
+
+func Set(key, val string) {
+    mu.Lock()
+    defer mu.Unlock()
+    config[key] = val   // Exclusive - waits for readers, blocks new ones
+}`}</Code>
+
+      <Callout type="info" title="When RWMutex Shines">
+        Use RWMutex when data is read much more often than written: cached config, in-memory indexes, routing tables. You get high throughput reads without building complex message-passing or fan-out systems.
+      </Callout>
+
+      <Paragraph>
+        Summary of when to use each:
+      </Paragraph>
+      <List>
+        <ListItem><strong>Channels</strong>: Model tasks, events, or pipelines (things consumed once). Clear data ownership through owner goroutine.</ListItem>
+        <ListItem><strong>Mutexes</strong>: High-volume reads of shared in-memory state. Many readers at once, writes are exclusive but brief.</ListItem>
+      </List>
     </Section>
   </>
 );
