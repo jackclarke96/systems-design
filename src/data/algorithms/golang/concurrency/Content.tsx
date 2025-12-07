@@ -1,4 +1,5 @@
 import { QuizQuestion } from "@/components/Quiz";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Fundamentals } from "./sections/Fundamentals";
 import { Channels } from "./sections/Channels";
 import { Select } from "./sections/Select";
@@ -41,13 +42,33 @@ export const quizQuestions: QuizQuestion[] = [
 
 export const Content = () => {
   return (
-    <div className="space-y-8">
-      <Fundamentals />
-      <Channels />
-      <Select />
-      <GoroutineLeaks />
-      <Memory />
-      <Patterns />
-    </div>
+    <Tabs defaultValue="fundamentals" className="w-full">
+      <TabsList className="grid w-full grid-cols-6 mb-6">
+        <TabsTrigger value="fundamentals">Fundamentals</TabsTrigger>
+        <TabsTrigger value="channels">Channels</TabsTrigger>
+        <TabsTrigger value="select">Select</TabsTrigger>
+        <TabsTrigger value="leaks">Leaks</TabsTrigger>
+        <TabsTrigger value="memory">Memory</TabsTrigger>
+        <TabsTrigger value="patterns">Patterns</TabsTrigger>
+      </TabsList>
+      <TabsContent value="fundamentals">
+        <Fundamentals />
+      </TabsContent>
+      <TabsContent value="channels">
+        <Channels />
+      </TabsContent>
+      <TabsContent value="select">
+        <Select />
+      </TabsContent>
+      <TabsContent value="leaks">
+        <GoroutineLeaks />
+      </TabsContent>
+      <TabsContent value="memory">
+        <Memory />
+      </TabsContent>
+      <TabsContent value="patterns">
+        <Patterns />
+      </TabsContent>
+    </Tabs>
   );
 };
