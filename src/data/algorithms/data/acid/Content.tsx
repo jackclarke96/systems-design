@@ -249,6 +249,31 @@ const LearnContent = () => (
         </p>
       </div>
 
+      {/* Three Places Your Change Lives */}
+      <Callout type="info" title="Three Places Your Change Lives">
+        <p className="text-sm text-muted-foreground mb-3">When you do an UPDATE, the change exists in three different places:</p>
+        <div className="grid md:grid-cols-3 gap-3">
+          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-3 border border-blue-200 dark:border-blue-900/50">
+            <p className="font-medium text-sm text-blue-700 dark:text-blue-400 mb-1">1. In-Memory (Buffer Cache)</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              The row is changed here <strong>first</strong>. This is what normal reads use. Fast, but volatile—lost on crash.
+            </p>
+          </div>
+          <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-3 border border-green-200 dark:border-green-900/50">
+            <p className="font-medium text-sm text-green-700 dark:text-green-400 mb-1">2. WAL on Disk</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Append-only log of "what changed". Used for <strong>crash recovery</strong> and replication. Written immediately.
+            </p>
+          </div>
+          <div className="bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3 border border-amber-200 dark:border-amber-900/50">
+            <p className="font-medium text-sm text-amber-700 dark:text-amber-400 mb-1">3. Data Files on Disk</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              The on-disk copy of tables & indexes. Updated <strong>later, in the background</strong> (checkpointing).
+            </p>
+          </div>
+        </div>
+      </Callout>
+
       {/* WAL vs Data Pages Explanation */}
       <Callout type="info" title="WAL is Append-Only, Data Pages Are Not">
         <div className="space-y-3">
