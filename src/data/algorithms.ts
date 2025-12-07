@@ -37,6 +37,7 @@ import { executionPatternsTopic } from "./algorithms/backend/execution-patterns"
 import { cloudCostsTopic } from "./algorithms/backend/cloud-costs";
 import { securityFundamentalsTopic } from "./algorithms/backend/security-fundamentals";
 import { askingQuestionsTopic } from "./algorithms/backend/asking-questions";
+import { goConcurrencyTopic } from "./algorithms/golang/concurrency";
 
 const patternsTopics = [
   consistentHashing,
@@ -109,6 +110,11 @@ const backendFundamentalsTopics: Algorithm[] = [
   securityFundamentalsTopic,
 ];
 
+// Golang topics
+const golangTopics: Algorithm[] = [
+  goConcurrencyTopic,
+];
+
 export const algorithmCategories: Category[] = [
   {
     id: "patterns",
@@ -134,5 +140,10 @@ export const algorithmCategories: Category[] = [
     id: "fintech",
     name: "Fintech",
     algorithms: fintechTopics,
+  },
+  {
+    id: "golang",
+    name: "Golang",
+    algorithms: golangTopics,
   },
 ];
