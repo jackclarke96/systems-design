@@ -167,6 +167,61 @@ func (pg *PressureGauge) Process(f func()) error {
       <Callout type="warning" title="When to Use WaitGroups">
         WaitGroups shouldn't be your first choice. Use them when you have cleanup to do after all goroutines exit - like closing a channel they all write to. If you just need to collect results, counting with a buffered channel is simpler.
       </Callout>
+
+      <Heading>6. Running Code Exactly Once with sync.Once</Heading>
+      <Paragraph>
+        Sometimes you want to lazy load or call initialization code exactly once after program launch. This is useful when initialization is slow and may not even be needed. The sync package provides `sync.Once` for this.
+      </Paragraph>
+      <Code language="go">{`type SlowComplicatedParser interface {
+    Parse(string) string
+}
+
+func initParser() SlowComplicatedParser {
+    // do all sorts of expensive setup...
+    return &myParser{}
+}
+
+var parser SlowComplicatedParser
+var once sync.Once
+
+func Parse(dataToParse string) string {
+    once.Do(func() {
+        parser = initParser()  // Only runs once, ever
+    })
+    return parser.Parse(dataToParse)
+}`}</Code>
+
+      <Callout type="tip" title="sync.Once Guarantees">
+        `sync.Once` ensures the function passed to `Do()` executes exactly once, even if called from multiple goroutines simultaneously. All other callers block until the first execution completes, then proceed without running the function again.
+      </Callout>
+
+      <Paragraph>
+        Common use cases for `sync.Once`:
+      </Paragraph>
+      <List>
+        <ListItem><strong>Lazy initialization</strong> - defer expensive setup until first use</ListItem>
+        <ListItem><strong>Singleton patterns</strong> - ensure only one instance of a resource</ListItem>
+        <ListItem><strong>One-time configuration</strong> - load config files or establish connections</ListItem>
+      </List>
+
+      <Code language="go">{`// Database connection example
+var db *sql.DB
+var dbOnce sync.Once
+
+func GetDB() *sql.DB {
+    dbOnce.Do(func() {
+        var err error
+        db, err = sql.Open("postgres", connString)
+        if err != nil {
+            log.Fatal(err)  // Handle error appropriately
+        }
+    })
+    return db
+}`}</Code>
+
+      <Callout type="warning" title="Error Handling with sync.Once">
+        If the function passed to `Do()` panics or fails, it still counts as "done" - subsequent calls won't retry. For initialization that might fail, consider using `sync.OnceValue` (Go 1.21+) or handle errors within the Once block.
+      </Callout>
     </Section>
   </>
 );
